@@ -1,0 +1,77 @@
+{% for terminal in terminals %}
+<tr id="terminal-{{ terminal.terminal_id }}">
+  <td colspan="6">
+    <div class="p-3 bg-light border rounded">
+      
+      <!-- Row 1: Core Info & Location -->
+      <div class="row gx-4">
+
+        <!-- Core Information -->
+        <div class="col-lg-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">Core Information</div>
+            <div class="card-body p-3">
+              <div class="row gy-2">
+                {% set fields_core = [
+                  ['Terminal ID', terminal.terminal_id],
+                  ['Merchant ID', terminal.merchant_id],
+                  ['Serial Number', terminal.terminal_serial_number],
+                  ['Terminal Type', terminal.terminal_type or 'N/A'],
+                  ['Model', terminal.terminal_model or 'N/A'],
+                  ['Brand', terminal.terminal_brand or 'N/A'],
+                  ['Firmware Version', terminal.firmware_version or 'N/A'],
+                  ['Status', terminal.status or 'N/A']
+                ] %}
+                {% for label, value in fields_core %}
+                <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                <div class="col-sm-8">{{ value }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Location & Connectivity -->
+        <div class="col-lg-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">Location & Connectivity</div>
+            <div class="card-body p-3">
+              <div class="row gy-2">
+                {% set fields_location = [
+                  ['Location ID', terminal.location_id or 'N/A'],
+                  ['City', terminal.city or 'N/A'],
+                  ['State', terminal.state or 'N/A'],
+                  ['Postal Code', terminal.postal_code or 'N/A'],
+                  ['Country', terminal.country or 'N/A'],
+                  ['Connectivity Type', terminal.connectivity_type or 'N/A'],               
+                ] %}
+                {% for label, value in fields_location %}
+                <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                <div class="col-sm-8">{{ value }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /Row 1 -->
+
+      <!-- Action Button -->
+      <div class="d-flex justify-content-center mt-3">
+        <button 
+          hx-get="/terminal/terminals/editTerminal/{{ terminal.terminal_id }}"
+          hx-target="#terminal-{{ terminal.terminal_id }}"
+          hx-swap="outerHTML"
+          class="btn btn-warning btn-sm px-4">Edit</button>
+      </div>
+
+    </div>
+  </td>
+</tr>
+{% endfor %}
+
+{% if not terminals %}
+<tr>
+  <td colspan="6" class="text-center py-4 text-muted">{{ message|default("No terminal found") }}</td>
+</tr>
+{% endif %}

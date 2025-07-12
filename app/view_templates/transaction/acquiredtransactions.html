@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include "./common/head.html" ignore missing with context %}
+    {% include "./common/dependencies.html" ignore missing with context %}
+    <!-- Ensure htmx and Bootstrap are included -->
+    <script src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeW8l5VFJE6s4CnR1uep4gWiu3tv3I50t+ZR4b+2MQ9B4OK1W6Hav3z" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <style>
+        .content-container {
+            padding: 20px;
+            min-height: 80vh;
+        }
+        .search-form {
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            min-width: 800px;
+        }
+        th, td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        /* Enhanced Modal Styling */
+        .modal-lg {
+            max-width: 1200px;
+        }
+        .mti-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            padding: 20px;
+        }
+        .mti-block {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .mti-block h6 {
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .mti-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .mti-content .label {
+            font-weight: bold;
+            color: #555;
+            text-align: right;
+            padding-right: 10px;
+        }
+        .mti-content .value {
+            text-align: left;
+            word-break: break-word;
+            color: #000;
+        }
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .mti-container {
+                grid-template-columns: 1fr;
+            }
+            .mti-block {
+                padding: 15px;
+            }
+            .mti-content {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            .mti-content .label {
+                text-align: left;
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include "./common/nav.html" ignore missing with context %}
+    <div class="content-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="mb-3 search-form">
+                    <form id="searchForm" class="d-flex">
+                        <select class="form-select me-2" id="filterBy" name="filterBy" style="width: 200px;" aria-label="Select filter type">
+                            <option value="de_37_retrieval_reference_number">Retrieval Reference Number</option>
+                            <option value="de_41_card_acceptor_terminal_id">Terminal ID</option>
+                            <option value="de_42_card_acceptor_id">Card Acceptor ID</option>
+                            <option value="de_18_merchant_type">Merchant Type</option>
+                            <option value="de_11_system_trace_audit_number">System Trace Audit Number</option>
+                        </select>
+                        <input type="text" class="form-control me-2" id="searchTerm" name="searchTerm" placeholder="Enter search term" style="width: 300px;" aria-label="Search term">
+                        <button type="submit" class="btn btn-primary" 
+                                hx-get="/transaction/acquiredtransactions"
+                                hx-target="#transactionList"
+                                hx-swap="innerHTML"
+                                hx-include="#searchForm">
+                            Search
+                        </button>
+                        <button type="button" class="btn btn-secondary ms-2" 
+                                hx-get="/transaction/acquiredtransactions"
+                                hx-target="#transactionList"
+                                hx-swap="innerHTML">
+                            Clear
+                        </button>
+                    </form>
+                </div>
+                <div class="table-container">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Retrieval Ref</th>
+                                <th scope="col">PAN</th>
+                                <th scope="col">Processing Code</th>
+                                <th scope="col">Amount Transaction</th>
+                                <th scope="col">Transmission Date/Time</th>
+                                <th scope="col">System Trace Audit Number</th>
+                                <th scope="col">Local Transaction Time</th>
+                                <th scope="col">Local Transaction Date</th>
+                                <th scope="col">Expiration Date</th>
+                                <th scope="col">Merchant Type</th>
+                                <th scope="col">Acquiring Inst. Country Code</th>
+                                <th scope="col">POS Entry Mode</th>
+                                <th scope="col">Response Code</th>
+                                <th scope="col">Terminal ID</th>
+                                <th scope="col">Card Acceptor ID</th>
+                                <th scope="col">Currency Code</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionList">
+                            {% include "transaction/partials/transaction_list.html" ignore missing with context %}
+                        </tbody>
+                    </table>
+                    {% if not acquiredtransactions %}
+                        <div class="no-data">No transactions found.</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true" data-current-retrieval-ref="">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header d-flex flex-column align-items-start">
+                    <h5 class="modal-title mb-2" id="transactionModalLabel">Transaction Details</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="mti-container">
+                        <div class="mti-block" id="mti0100Content">
+                            <h6>MTI 0100</h6>
+                            <div class="mti-content">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+                        <div class="mti-block" id="mti0110Content">
+                            <h6>MTI 0110</h6>
+                            <div class="mti-content">
+                                <p>Loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript for Modal Trigger -->
+    <script>
+        document.addEventListener('click', function(event) {
+            const row = event.target.closest('tr[data-retrieval-ref]');
+            if (row) {
+                const retrievalRef = row.getAttribute('data-retrieval-ref');
+                // Set the retrieval ref on the modal and update title
+                document.querySelector('#transactionModal').setAttribute('data-current-retrieval-ref', retrievalRef);
+                document.querySelector('#transactionModalLabel').textContent = `Transaction Details - Retrieval Ref: ${retrievalRef}`;
+                // Trigger htmx requests for MTI 0100 and MTI 0110
+                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0100`, { target: '#mti0100Content' });
+                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0110`, { target: '#mti0110Content' });
+                // Show the modal
+                const modal = new bootstrap.Modal(document.getElementById('transactionModal'));
+                modal.show();
+            }
+        });
+
+        // Handle MTI link clicks in the modal (if added later)
+        document.querySelectorAll('.mti-link').forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const mti = this.getAttribute('data-mti');
+                const target = this.getAttribute('data-hx-target');
+                const retrievalRef = document.querySelector('#transactionModal').getAttribute('data-current-retrieval-ref') || '';
+                if (retrievalRef) {
+                    htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=${mti}`, { target });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

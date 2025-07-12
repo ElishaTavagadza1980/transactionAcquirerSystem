@@ -1,0 +1,104 @@
+<style>
+    .modal-dialog.modal-lg {
+        max-width: 1000px;
+    }
+    .mti-content {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+        font-size: 0.9rem;
+    }
+    .mti-content div:nth-child(odd) {
+        font-weight: bold;
+        text-align: right;
+        padding-right: 10px;
+    }
+    .mti-content div:nth-child(even) {
+        text-align: left;
+    }
+</style>
+
+<div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex flex-column align-items-start">
+                <h5 class="modal-title mb-2" id="transactionModalLabel">Transaction Details - Retrieval Ref: {{ retrieval_reference_number }}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>MTI 0100</h6>
+                        {% if mti0100 %}
+                        <div class="mti-content">
+                            <div>Message Type:</div><div>{{ mti0100.message_type_indicator or 'N/A' }}</div>
+                            <div>Card Number:</div><div>{{ mti0100.de_2_pan or 'N/A' }}</div>
+                            <div>Processing Code:</div><div>{{ mti0100.de_3_processing_code or 'N/A' }}</div>
+                            <div>Amount Transaction:</div><div>{{ mti0100.de_4_amount_transaction or 'N/A' }}</div>
+                            <div>Transmission DT:</div><div>{{ mti0100.de_7_transmission_date_time or 'N/A' }}</div>
+                            <div>System Trace No:</div><div>{{ mti0100.de_11_system_trace_audit_number or 'N/A' }}</div>
+                            <div>Local Time:</div><div>{{ mti0100.de_12_local_transaction_time or 'N/A' }}</div>
+                            <div>Local Date:</div><div>{{ mti0100.de_13_local_transaction_date or 'N/A' }}</div>
+                            <div>Expiration Date:</div><div>{{ mti0100.de_14_expiration_date or 'N/A' }}</div>
+                            <div>Merchant Type:</div><div>{{ mti0100.de_18_merchant_type or 'N/A' }}</div>
+                            <div>Country Code:</div><div>{{ mti0100.de_19_acquiring_institution_country_code or 'N/A' }}</div>
+                            <div>POS Entry Mode:</div><div>{{ mti0100.de_22_pos_entry_mode or 'N/A' }}</div>
+                            <div>PAN Seq No:</div><div>{{ mti0100.de_23_card_sequence_number or 'N/A' }}</div>
+                            <div>Acquirer Inst ID:</div><div>{{ mti0100.de_32_acquiring_institution_id or 'N/A' }}</div>
+                            <div>Forwarding Inst ID:</div><div>{{ mti0100.de_33_forwarding_institution_id or 'N/A' }}</div>
+                            <div>Track2 Data:</div><div>{{ mti0100.de_35_track2_data or 'N/A' }}</div>
+                            <div>Retrieval Ref:</div><div>{{ mti0100.de_37_retrieval_reference_number or 'N/A' }}</div>
+                            <div>Auth ID Resp:</div><div>{{ mti0100.de_38_authorization_id_response or 'N/A' }}</div>
+                            <div>Response Code:</div><div>{{ mti0100.de_39_response_code or 'N/A' }}</div>
+                            <div>Terminal ID:</div><div>{{ mti0100.de_41_card_acceptor_terminal_id or 'N/A' }}</div>
+                            <div>Card Acceptor ID:</div><div>{{ mti0100.de_42_card_acceptor_id or 'N/A' }}</div>
+                            <div>Card Acceptor Name:</div><div>{{ mti0100.de_43_card_acceptor_name_location or 'N/A' }}</div>
+                            <div>Currency Code:</div><div>{{ mti0100.de_49_currency_code_transaction or 'N/A' }}</div>
+                            <div>Status:</div><div>{{ mti0100.status or 'N/A' }}</div>
+                            <div>Status Reason:</div><div>{{ mti0100.status_reason or 'N/A' }}</div>
+                        </div>
+                        {% else %}
+                        <p>No MTI 0100 transaction found.</p>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <h6>MTI 0110</h6>
+                        {% if mti0110 %}
+                        <div class="mti-content">
+                            <div>Message Type:</div><div>{{ mti0110.message_type_indicator or 'N/A' }}</div>
+                            <div>Card Number:</div><div>{{ mti0110.de_2_pan or 'N/A' }}</div>
+                            <div>Processing Code:</div><div>{{ mti0110.de_3_processing_code or 'N/A' }}</div>
+                            <div>Amount Transaction:</div><div>{{ mti0110.de_4_amount_transaction or 'N/A' }}</div>
+                            <div>Transmission DT:</div><div>{{ mti0110.de_7_transmission_date_time or 'N/A' }}</div>
+                            <div>System Trace No:</div><div>{{ mti0110.de_11_system_trace_audit_number or 'N/A' }}</div>
+                            <div>Local Time:</div><div>{{ mti0110.de_12_local_transaction_time or 'N/A' }}</div>
+                            <div>Local Date:</div><div>{{ mti0110.de_13_local_transaction_date or 'N/A' }}</div>
+                            <div>Expiration Date:</div><div>{{ mti0110.de_14_expiration_date or 'N/A' }}</div>
+                            <div>Merchant Type:</div><div>{{ mti0110.de_18_merchant_type or 'N/A' }}</div>
+                            <div>Country Code:</div><div>{{ mti0110.de_19_acquiring_institution_country_code or 'N/A' }}</div>
+                            <div>POS Entry Mode:</div><div>{{ mti0110.de_22_pos_entry_mode or 'N/A' }}</div>
+                            <div>PAN Seq No:</div><div>{{ mti0110.de_23_card_sequence_number or 'N/A' }}</div>
+                            <div>Acquirer Inst ID:</div><div>{{ mti0110.de_32_acquiring_institution_id or 'N/A' }}</div>
+                            <div>Forwarding Inst ID:</div><div>{{ mti0110.de_33_forwarding_institution_id or 'N/A' }}</div>
+                            <div>Track2 Data:</div><div>{{ mti0110.de_35_track2_data or 'N/A' }}</div>
+                            <div>Retrieval Ref:</div><div>{{ mti0110.de_37_retrieval_reference_number or 'N/A' }}</div>
+                            <div>Auth ID Resp:</div><div>{{ mti0110.de_38_authorization_id_response or 'N/A' }}</div>
+                            <div>Response Code:</div><div>{{ mti0110.de_39_response_code or 'N/A' }}</div>
+                            <div>Terminal ID:</div><div>{{ mti0110.de_41_card_acceptor_terminal_id or 'N/A' }}</div>
+                            <div>Card Acceptor ID:</div><div>{{ mti0110.de_42_card_acceptor_id or 'N/A' }}</div>
+                            <div>Card Acceptor Name:</div><div>{{ mti0110.de_43_card_acceptor_name_location or 'N/A' }}</div>
+                            <div>Currency Code:</div><div>{{ mti0110.de_49_currency_code_transaction or 'N/A' }}</div>
+                            <div>Status:</div><div>{{ mti0110.status or 'N/A' }}</div>
+                            <div>Status Reason:</div><div>{{ mti0110.status_reason or 'N/A' }}</div>
+                        </div>
+                        {% else %}
+                        <p>No MTI 0110 transaction found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

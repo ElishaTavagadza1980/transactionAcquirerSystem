@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheme Routing List</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        a { color: #4CAF50; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        .create-link { display: block; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <h2>Scheme Routing Configurations</h2>
+    <a class="create-link" href="schemerouting/schemerouting/create">Create New Routing</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Scheme</th>
+                <th>Routing</th>                
+            </tr>
+        </thead>
+        <tbody>
+            {% for routing in routings %}
+                {% include 'schemerouting/partials/schemerouting_tr.html' %}
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

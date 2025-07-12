@@ -1,0 +1,224 @@
+{% for merchant in merchants %}
+<tr id="merchant-{{ merchant.merchant_id }}">
+  <td colspan="6">
+    <form id="update-form-{{ merchant.merchant_id }}">
+      <div class="p-3 bg-light border rounded">
+
+        <!-- Row 1: Core Info & KYC -->
+        <div class="row gx-4">
+          
+          <!-- Core Information -->
+          <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+              <div class="card-header bg-primary text-white">Core Information</div>
+              <div class="card-body p-3">
+                <div class="row gy-2">
+                  {% set fields_core = [
+                    ['Merchant ID', merchant.merchant_id, false],
+                    ['Business Name', merchant.business_name, false],
+                    ['Legal Name', merchant.legal_name or '', false],
+                    ['Business Type', merchant.business_type or '', false],
+                    ['MCC', merchant.mcc or '', false],
+                    ['Industry', merchant.industry or '', false],
+                    ['Website URL', merchant.website_url or '', false],
+                    ['Contact Email', merchant.contact_email or '', false],
+                    ['Contact Phone', merchant.contact_phone or '', false],
+                    ['Address Line 1', merchant.address_firstline or '', false],
+                    ['Address Line 2', merchant.address_secondline or '', false],
+                    ['City', merchant.city or '', false],
+                    ['State', merchant.state or '', false],
+                    ['Postal Code', merchant.postal_code or '', false],
+                    ['Country', merchant.country or '', false]
+                  ] %}
+                  {% for label, value, required in fields_core %}
+                  <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                  <div class="col-sm-8">
+                    {% if label == 'Merchant ID' %}
+                      {{ value }}
+                    {% else %}
+                      <input name="{% if label == 'Address Line 1' %}address_firstline{% elif label == 'Address Line 2' %}address_secondline{% else %}{{ label|lower|replace(' ', '_') }}{% endif %}" 
+                             class="form-control form-control-sm"
+                             value="{{ value }}" {% if required %}required{% endif %}>
+                    {% endif %}
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KYC & Compliance -->
+          <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+              <div class="card-header bg-primary text-white">KYC & Compliance</div>
+              <div class="card-body p-3">
+                <div class="row gy-2">
+                  <!-- KYC Status -->
+                  <div class="col-sm-4 fw-semibold">KYC Status</div>
+                  <div class="col-sm-8">
+                    <select name="kyc_status" class="form-select form-select-sm">
+                      <option value="pending" {% if merchant.kyc_status=='pending' %}selected{% endif %}>Pending</option>
+                      <option value="verified" {% if merchant.kyc_status=='verified' %}selected{% endif %}>Verified</option>
+                      <option value="rejected" {% if merchant.kyc_status=='rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                  </div>
+                  <!-- Other compliance fields -->
+                  {% set fields_kyc = [
+                    ['KYC Type', merchant.kyc_type or ''],
+                    ['ID Proof Type', merchant.id_proof_type or ''],
+                    ['ID Proof Number', merchant.id_proof_number or ''],
+                    ['Business Reg. Doc', merchant.business_registration_doc or ''],
+                    ['GST Number', merchant.gst_number or ''],
+                    ['TIN', merchant.tin or '']
+                  ] %}
+                  {% for label, value in fields_kyc %}
+                  <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                  <div class="col-sm-8">
+                    <input name="{{ label|lower|replace(' ', '_') }}" class="form-control form-control-sm" value="{{ value }}">
+                  </div>
+                  {% endfor %}
+                  <!-- AML Status -->
+                  <div class="col-sm-4 fw-semibold">AML Check Status</div>
+                  <div class="col-sm-8">
+                    <select name="aml_check_status" class="form-select form-select-sm">
+                      <option value="pending" {% if merchant.aml_check_status=='pending' %}selected{% endif %}>Pending</option>
+                      <option value="cleared" {% if merchant.aml_check_status=='cleared' %}selected{% endif %}>Cleared</option>
+                      <option value="flagged" {% if merchant.aml_check_status=='flagged' %}selected{% endif %}>Flagged</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4 fw-semibold">Doc Verification</div>
+                  <div class="col-sm-8">
+                    <input name="document_verification_status" class="form-control form-control-sm"
+                           value="{{ merchant.document_verification_status or '' }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- /Row 1 -->
+
+        <!-- Row 2: Bank & Risk and Contract/Tech/Meta -->
+        <div class="row gx-4">
+
+          <!-- Bank & Risk -->
+          <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+              <div class="card-header bg-primary text-white">Bank & Risk</div>
+              <div class="card-body p-3">
+                <div class="row gy-2">
+                  {% set fields_bank = [
+                    ['Bank Account Name', merchant.bank_account_name or ''],
+                    ['Bank Account Number', merchant.bank_account_number or ''],
+                    ['IFSC Code', merchant.ifsc_code or ''],
+                    ['Bank Name', merchant.bank_name or ''],
+                    ['Settlement Currency', merchant.settlement_currency or ''],
+                    ['Settlement Cycle', merchant.settlement_cycle or '']
+                  ] %}
+                  {% for label, value in fields_bank %}
+                  <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                  <div class="col-sm-8">
+                    <input name="{{ label|lower|replace(' ', '_') }}" class="form-control form-control-sm" value="{{ value }}">
+                  </div>
+                  {% endfor %}
+
+                  <div class="col-sm-4 fw-semibold">Risk Category</div>
+                  <div class="col-sm-8">
+                    <select name="risk_category" class="form-select form-select-sm">
+                      {% for opt in ['low', 'medium', 'high'] %}
+                      <option value="{{ opt }}" {% if merchant.risk_category==opt %}selected{% endif %}>{{ opt|capitalize }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-sm-4 fw-semibold">Monthly Volume</div>
+                  <div class="col-sm-8">
+                    <input name="expected_monthly_volume" type="number" step="0.01" class="form-control form-control-sm" value="{{ merchant.expected_monthly_volume or '' }}">
+                  </div>
+                  <div class="col-sm-4 fw-semibold">Avg Ticket Size</div>
+                  <div class="col-sm-8">
+                    <input name="average_ticket_size" type="number" step="0.01" class="form-control form-control-sm" value="{{ merchant.average_ticket_size or '' }}">
+                  </div>
+                  <div class="col-sm-4 fw-semibold">Underwriter Comments</div>
+                  <div class="col-sm-8">
+                    <textarea name="underwriter_comments" class="form-control form-control-sm">{{ merchant.underwriter_comments or '' }}</textarea>
+                  </div>
+                  <div class="col-sm-4 fw-semibold">Approval Status</div>
+                  <div class="col-sm-8">
+                    <select name="approval_status" class="form-select form-select-sm">
+                      {% for opt in ['pending','approved','rejected'] %}
+                      <option value="{{ opt }}" {% if merchant.approval_status==opt %}selected{% endif %}>{{ opt|capitalize }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="col-sm-4 fw-semibold">Approval Date</div>
+                  <div class="col-sm-8">
+                    <input name="approval_date" type="date" class="form-control form-control-sm" value="{{ merchant.approval_date or '' }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contract / Tech / Meta -->
+          <div class="col-lg-6 mb-3">
+            <div class="card h-100">
+              <div class="card-header bg-primary text-white">Contract • Tech • Meta</div>
+              <div class="card-body p-3">
+                <div class="row gy-2">
+                  <div class="col-sm-4 fw-semibold">Contract Signed</div>
+                  <div class="col-sm-8">
+                    <select name="contract_signed" class="form-select form-select-sm">
+                      <option value="true" {% if merchant.contract_signed %}selected{% endif %}>Yes</option>
+                      <option value="false" {% if not merchant.contract_signed %}selected{% endif %}>No</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4 fw-semibold">Signed On</div>
+                  <div class="col-sm-8"><input name="contract_signing_date" type="date" class="form-control form-control-sm" value="{{ merchant.contract_signing_date or '' }}"></div>
+                  <div class="col-sm-4 fw-semibold">Contract URL</div>
+                  <div class="col-sm-8"><input name="contract_url" class="form-control form-control-sm" value="{{ merchant.contract_url or '' }}"></div>
+
+                  <div class="col-sm-4 fw-semibold">API Key</div>
+                  <div class="col-sm-8"><input name="api_key" class="form-control form-control-sm" value="{{ merchant.api_key or '' }}"></div>
+                  <div class="col-sm-4 fw-semibold">Webhook URL</div>
+                  <div class="col-sm-8"><input name="webhook_url" class="form-control form-control-sm" value="{{ merchant.webhook_url or '' }}"></div>
+                  <div class="col-sm-4 fw-semibold">Integration Type</div>
+                  <div class="col-sm-8"><input name="integration_type" class="form-control form-control-sm" value="{{ merchant.integration_type or '' }}"></div>
+                  <div class="col-sm-4 fw-semibold">POS Terminals</div>
+                  <div class="col-sm-8"><input name="pos_terminal_count" type="number" class="form-control form-control-sm" value="{{ merchant.pos_terminal_count }}"></div>
+
+                  <div class="col-sm-4 fw-semibold">Status</div>
+                  <div class="col-sm-8">
+                    <select name="status" class="form-select form-select-sm">
+                      <option value="Active" {% if merchant.status=='Active' %}selected{% endif %}>Active</option>
+                      <option value="Inactive" {% if merchant.status=='Inactive' %}selected{% endif %}>Inactive</option>
+                    </select>
+                  </div>                  
+              </div>
+            </div>
+          </div>
+
+        </div> <!-- /Row 2 -->
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-center gap-3 mt-3">
+          <button hx-put="/merchant/merchant/{{ merchant.merchant_id }}"
+                  hx-target="#merchantList"
+                  hx-swap="innerHTML"
+                  hx-include="#update-form-{{ merchant.merchant_id }}"
+                  class="btn btn-success btn-sm px-4">Save</button>
+          <button type="button"
+                  hx-get="/merchant/merchant/{{ merchant.merchant_id }}"
+                  hx-target="#merchantList"
+                  hx-swap="innerHTML"
+                  class="btn btn-secondary btn-sm px-4">Cancel</button>
+        </div>
+
+      </div>
+    </form>
+  </td>
+</tr>
+{% endfor %}
+
+{% if not merchants %}
+<tr><td colspan="6" class="text-center py-4 text-muted">{{ message|default("No merchant found") }}</td></tr>
+{% endif %}

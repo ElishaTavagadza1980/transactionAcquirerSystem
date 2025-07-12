@@ -1,0 +1,59 @@
+<!-- templates/home.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    {% include "./common/head.html" %}
+    {% include "./common/dependencies.html" %}
+</head>
+<body>
+    {% include "./common/nav.html" %}
+    
+    <div class="container mt-5 text-center">
+        <h1>Welcome to Transaction System</h1>
+        <p class="lead">Manage your transactions, merchants, and terminals efficiently.</p>
+
+        <!-- Transaction Statistics Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h2>Transaction Statistics</h2>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card text-bg-primary">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Transactions</h5>
+                                <p class="card-text display-6">{{ stats.total_transactions | default(0) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card text-bg-success">
+                            <div class="card-body">
+                                <h5 class="card-title">Total Amount</h5>
+                                <p class="card-text display-6">{{ '%0.2f'|format(stats.total_amount | default(0.0)) }} {{ stats.currency | default('USD') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card text-bg-warning">
+                            <div class="card-body">
+                                <h5 class="card-title">Active Transactions</h5>
+                                <p class="card-text display-6">{{ stats.active_count | default(0) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <div class="card text-bg-danger">
+                            <div class="card-body">
+                                <h5 class="card-title">Blocked Transactions</h5>
+                                <p class="card-text display-6">{{ stats.blocked_count | default(0) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!-- templates/common/nav.html -->
+<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+                <a class="nav-link {% if request.path == '/transaction/acquiredtransactions' %}active{% endif %}" href="/transaction/acquiredtransactions">Transaction</a>
+                
+                <!-- Merchants Dropdown -->
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.path.startswith('/merchant/merchants') %}active{% endif %}" 
+                       href="#" id="merchantsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Merchants
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="merchantsDropdown">
+                        <li><a class="dropdown-item" href="/merchant/merchants">View Merchants</a></li>
+                        <li><a class="dropdown-item" href="/merchant/merchants/addMerchant">Onboard New Merchant</a></li>
+                        <li class="dropdown dropend">
+                            <a class="dropdown-item dropdown-toggle" href="#" id="manageMerchantDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Manage Merchant
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="manageMerchantDropdown">
+                                <li><a class="dropdown-item" href="/merchant/merchants/manageMerchant/editMerchant">Edit Merchant</a></li>
+                                <li><a class="dropdown-item" href="/merchant/merchants/manageMerchant/configureMerchantSettings">Configure Merchant Settings</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Terminals Dropdown -->
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.path.startswith('/terminal/terminals') %}active{% endif %}" 
+                       href="#" id="terminalsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Terminals
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="terminalsDropdown">
+                        <li><a class="dropdown-item" href="/terminal/terminals">View Terminals</a></li>
+                        <li><a class="dropdown-item" href="/terminal/terminals/addTerminal">Add New Terminal</a></li>
+                        <li><a class="dropdown-item" href="/terminal/terminals/editTerminal">Edit Terminal</a></li>
+                    </ul>
+                </div>
+
+                <!-- Cards Dropdown -->
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if request.path.startswith('/card/cards') %}active{% endif %}" 
+                       href="#" id="cardsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Cards
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="cardsDropdown">
+                        <li><a class="dropdown-item" href="/card/cards">View Cards</a></li>
+                        <li><a class="dropdown-item" href="/card/cards/addCard">Add New Cards</a></li>
+                    </ul>
+                </div>
+
+                <!-- Scheme Routing -->
+                <a class="nav-link {% if request.path.startswith('/schemerouting') %}active{% endif %}" href="/schemerouting/">Scheme Routing</a>
+            </div>
+        </div>
+    </div>
+</nav>

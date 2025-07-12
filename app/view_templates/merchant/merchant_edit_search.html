@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit/Update Merchant</title>
+    {% include "./common/head.html" ignore missing with context %}
+    <style>
+        .content-container {
+            min-height: 80vh;
+            padding: 20px;
+        }
+        .search-form {
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .no-data {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    {% include "./common/nav.html" ignore missing with context %}
+    <div class="content-container">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="text-center">Merchant</h1>
+                {% if success_message %}
+                    <div class="alert alert-success" role="alert">{{ success_message }}</div>
+                {% endif %}
+
+                <form class="search-form" 
+                      hx-get="/merchant/merchants/manageMerchant/editMerchant/search" 
+                      hx-target="#merchantList" 
+                      hx-swap="innerHTML">
+                    <div class="row g-2 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label">Filter By</label>
+                            <select class="form-select form-select-sm" name="filter_field">
+                                <option value="merchant_id">Merchant ID</option>
+                                <option value="business_name">Business Name</option>                                
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Search</label>
+                            <input type="text" class="form-control form-control-sm" name="search_value" placeholder="Enter value">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Search</button>
+                        </div>
+                        <div class="col-md-3">
+                            <button type="button" class="btn btn-secondary w-100" 
+                                    onclick="document.querySelector('[name=search_value]').value=''; document.querySelector('[name=filter_field]').value='merchant_id';" 
+                                    hx-get="/merchant/merchants/manageMerchant/edit/search?filter_field=merchant_id&search_value=" 
+                                    hx-target="#merchantList" 
+                                    hx-swap="innerHTML">
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Search results display here -->
+                <div id="merchantList" class="mt-4"></div>
+            </div>
+        </div>
+    </div>
+    {% include "./common/dependencies.html" ignore missing with context %}
+</body>
+</html>
+
+

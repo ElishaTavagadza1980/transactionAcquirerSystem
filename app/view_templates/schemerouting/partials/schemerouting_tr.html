@@ -1,0 +1,13 @@
+<tr>
+    <td>{{ routing.scheme }}</td>
+    <td>        
+          <form action="/schemerouting/update" method="POST" class="table-form">
+            <input type="hidden" name="scheme" value="{{ routing.scheme }}">
+            <select name="routing" required>
+                <option value="external" {{ "selected" if routing.routing == "external" else "" }}>External</option>
+                <option value="internal" {{ "selected" if routing.routing == "internal" else "" }}>Internal</option>
+            </select>
+            <button type="submit">Update</button>
+        </form>
+    </td>
+   </tr>

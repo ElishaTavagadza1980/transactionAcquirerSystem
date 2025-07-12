@@ -1,0 +1,150 @@
+{% for merchant in merchants %}
+<tr id="merchant-{{ merchant.merchant_id }}">
+  <td colspan="6">
+    <div class="p-3 bg-light border rounded">
+      
+      <!-- Row 1: Core Info & KYC -->
+      <div class="row gx-4">
+
+        <!-- Core Information -->
+        <div class="col-lg-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">Core Information</div>
+            <div class="card-body p-3">
+              <div class="row gy-2">
+                {% set fields_core = [
+                  ['Merchant ID', merchant.merchant_id],
+                  ['Business Name', merchant.business_name],
+                  ['Legal Name', merchant.legal_name or 'N/A'],
+                  ['Business Type', merchant.business_type or 'N/A'],
+                  ['MCC', merchant.mcc or 'N/A'],
+                  ['Industry', merchant.industry or 'N/A'],
+                  ['Website URL', merchant.website_url or 'N/A'],
+                  ['Contact Email', merchant.contact_email or 'N/A'],
+                  ['Contact Phone', merchant.contact_phone or 'N/A'],
+                  ['Address Line 1', merchant.address_firstline ],
+                  ['Address Line 2', merchant.address_secondline ],
+                  ['City', merchant.city or 'N/A'],
+                  ['State', merchant.state or 'N/A'],
+                  ['Postal Code', merchant.postal_code or 'N/A'],
+                  ['Country', merchant.country or 'N/A']
+                ] %}
+                {% for label, value in fields_core %}
+                <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                <div class="col-sm-8">{{ value }}
+                
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KYC & Compliance -->
+        <div class="col-lg-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">KYC & Compliance</div>
+            <div class="card-body p-3">
+              <div class="row gy-2">
+                <div class="col-sm-4 fw-semibold">KYC Status</div>
+                <div class="col-sm-8">{{ merchant.kyc_status }}</div>
+
+                {% set fields_kyc = [
+                  ['KYC Type', merchant.kyc_type or 'N/A'],
+                  ['ID Proof Type', merchant.id_proof_type or 'N/A'],
+                  ['ID Proof Number', merchant.id_proof_number or 'N/A'],
+                  ['Business Reg. Doc', merchant.business_registration_doc or 'N/A'],
+                  ['GST Number', merchant.gst_number or 'N/A'],
+                  ['TIN', merchant.tin or 'N/A'],
+                  ['AML Check Status', merchant.aml_check_status or 'N/A'],
+                  ['Doc Verification', merchant.document_verification_status or 'N/A']
+                ] %}
+                {% for label, value in fields_kyc %}
+                <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                <div class="col-sm-8">{{ value }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /Row 1 -->
+
+      <!-- Row 2: Bank & Risk and Contract/Tech/Meta -->
+      <div class="row gx-4">
+
+        <!-- Bank & Risk -->
+        <div class="col-lg-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">Bank & Risk</div>
+            <div class="card-body p-3">
+              <div class="row gy-2">
+                {% set fields_bank = [
+                  ['Bank Account Name', merchant.bank_account_name or 'N/A'],
+                  ['Bank Account Number', merchant.bank_account_number or 'N/A'],
+                  ['IFSC Code', merchant.ifsc_code or 'N/A'],
+                  ['Bank Name', merchant.bank_name or 'N/A'],
+                  ['Settlement Currency', merchant.settlement_currency or 'N/A'],
+                  ['Settlement Cycle', merchant.settlement_cycle or 'N/A'],
+                  ['Risk Category', merchant.risk_category or 'N/A'],
+                  ['Monthly Volume', merchant.expected_monthly_volume or 'N/A'],
+                  ['Avg Ticket Size', merchant.average_ticket_size or 'N/A'],
+                  ['Underwriter Comments', merchant.underwriter_comments or 'N/A'],
+                  ['Approval Status', merchant.approval_status or 'N/A'],
+                  ['Approval Date', merchant.approval_date or 'N/A']
+                ] %}
+                {% for label, value in fields_bank %}
+                <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                <div class="col-sm-8">{{ value }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contract / Tech / Meta -->
+        <div class="col-lg-6 mb-3">
+          <div class="card h-100">
+            <div class="card-header bg-primary text-white">Contract • Tech • Meta</div>
+            <div class="card-body p-3">
+              <div class="row gy-2">
+                {% set fields_contract = [
+                  ['Contract Signed', 'Yes' if merchant.contract_signed else 'No'],
+                  ['Signed On', merchant.contract_signing_date or 'N/A'],
+                  ['Contract URL', merchant.contract_url or 'N/A'],
+                  ['API Key', merchant.api_key or 'N/A'],
+                  ['Webhook URL', merchant.webhook_url or 'N/A'],
+                  ['Integration Type', merchant.integration_type or 'N/A'],
+                  ['POS Terminals', merchant.pos_terminal_count or 'N/A'],
+                  ['Status', merchant.status or 'N/A'],                  
+                ] %}
+                {% for label, value in fields_contract %}
+                <div class="col-sm-4 fw-semibold">{{ label }}</div>
+                <div class="col-sm-8">{{ value }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div> <!-- /Row 2 -->
+
+      <!-- Action Button -->
+      <div class="d-flex justify-content-center mt-3">
+        <button 
+          hx-get="/merchant/merchants/manageMerchant/edit/{{ merchant.merchant_id }}"
+          hx-target="#merchant-{{ merchant.merchant_id }}"
+          hx-swap="outerHTML"
+          class="btn btn-warning btn-sm px-4">Edit</button>
+      </div>
+
+    </div>
+  </td>
+</tr>
+{% endfor %}
+
+{% if not merchants %}
+<tr>
+  <td colspan="6" class="text-center py-4 text-muted">{{ message|default("No merchant found") }}</td>
+</tr>
+{% endif %}

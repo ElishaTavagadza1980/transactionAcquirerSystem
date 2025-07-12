@@ -1,0 +1,27 @@
+<tr id="transaction-{{ transaction.de_11_system_trace_audit_number }}" data-retrieval-ref="{{ transaction.de_37_retrieval_reference_number }}">
+    <td>
+        <a href="#"
+           class="text-primary open-transaction-modal"
+           data-bs-toggle="modal"
+           data-bs-target="#transactionModal"
+           data-retrieval="{{ transaction.de_37_retrieval_reference_number }}">
+            {{ transaction.de_37_retrieval_reference_number or 'N/A' }}
+        </a>
+    </td>
+    <td>{{ transaction.de_2_pan or 'N/A' }}</td>
+    <td>{{ transaction.de_3_processing_code or 'N/A' }}</td>
+    <td>{{ transaction.de_4_amount_transaction or 'N/A' }}</td>
+    <td>{{ transaction.de_7_transmission_date_time or 'N/A' }}</td>
+    <td>{{ transaction.de_11_system_trace_audit_number or 'N/A' }}</td>
+    <td>{{ transaction.de_12_local_transaction_time or 'N/A' }}</td>
+    <td>{{ transaction.de_13_local_transaction_date or 'N/A' }}</td>
+    <td>{{ transaction.de_14_expiration_date or 'N/A' }}</td>
+    <td>{{ transaction.de_18_merchant_type or 'N/A' }}</td>
+    <td>{{ transaction.de_19_acquiring_institution_country_code or 'N/A' }}</td>
+    <td>{{ transaction.de_22_pos_entry_mode or 'N/A' }}</td>
+    <td>{{ transaction.de_39_response_code or 'N/A' }}</td>
+    <td>{{ transaction.de_41_card_acceptor_terminal_id or 'N/A' }}</td>
+    <td>{{ transaction.de_42_card_acceptor_id or 'N/A' }}</td>
+    <td>{{ transaction.de_49_currency_code_transaction or 'N/A' }}</td>
+    <td>{{ transaction.status or 'N/A' }}</td>
+</tr>

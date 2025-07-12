@@ -1,0 +1,11 @@
+{% if success_message %}
+    <div class="alert alert-success" role="alert">
+        {{ success_message }}
+    </div>
+{% endif %}
+{% for merchant in merchants %}
+    {% include "merchant/partials/merchant_tr.html" %}
+{% endfor %}
+{% if not merchants %}
+    <tr><td colspan="4" class="no-data">No merchants found.</td></tr>
+{% endif %}

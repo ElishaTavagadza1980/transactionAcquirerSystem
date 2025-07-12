@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css?family=Orbitron&display=swap');
+
+h1 {
+    color: red;
+}
+
+#browserTime {
+    color: blue;
+}
+
+#serverTime {
+    color: green;
+}
+
+.timeBlock {
+    font-family: 'Orbitron', sans-serif;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 0.5em;
+}
+
+/* Custom CSS to handle nested dropdown positioning */
+.dropdown-menu .dropdown:hover > .dropdown-menu {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-top: -0.5rem;
+}
+
+.dropdown-menu .dropdown {
+    position: relative;
+}

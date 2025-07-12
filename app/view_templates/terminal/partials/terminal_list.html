@@ -1,0 +1,11 @@
+{% if success_message %}
+    <div class="alert alert-success" role="alert">
+        {{ success_message }}
+    </div>
+{% endif %}
+{% for terminal in terminals %}
+    {% include "terminal/partials/terminal_tr.html" %}
+{% endfor %}
+{% if not terminals %}
+    <tr><td colspan="6" class="no-data">No terminals found.</td></tr>
+{% endif %}
