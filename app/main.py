@@ -12,6 +12,7 @@ from app.routes.terminal_route import router as terminal_router
 from app.routes.cards_route import router as cards_router
 from app.routes.home_route import router as home_router  # New import
 from app.routes.schemerouting_route import router as schemerouting_router  # New import for scheme routing
+from app.routes.auth_route import router as auth_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,6 +45,7 @@ app.include_router(merchant_router, prefix="/merchant")
 app.include_router(terminal_router, prefix="/terminal")
 app.include_router(cards_router, prefix="/card")
 app.include_router(schemerouting_router, prefix="/schemerouting")  # Add scheme routing router
+app.include_router(auth_router, prefix="/auth")
 
 # Catch-all for Chrome devTools /.well-known/ requests
 @app.get("/.well-known/{path:path}")
