@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "./common/dependencies.html" %}
+    <title>Edit User - Transaction Acquirer System</title>
+</head>
+<body>
+    {% include 'common/nav.html' %}
+    <div class="container mt-5">
+        <h2>Edit User</h2>
+        <form id="editUserForm">
+            <input type="hidden" name="user_id" value="{{ user.user_id }}">
+
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="full_name" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user.full_name }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="role" class="form-label">Role</label>
+                <input type="text" class="form-control" id="role" name="role" value="{{ user.role }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <input type="text" class="form-control" id="status" name="status" value="{{ user.status }}" required>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Update User</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='/users'">Cancel</button>
+            </div>
+        </form>
+
+    </div>
+    <script>
+        document.getElementById('editUserForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+            const userId = formData.get('user_id');
+
+            const response = await fetch(`/users/${userId}`, {
+                method: 'PUT',
+                body: formData,
+            });
+
+            if (response.ok) {
+                window.location.href = "/users";
+            } else {
+                const errorText = await response.text();
+                alert("Update failed: " + errorText);
+            }
+        });
+        </script>
+
+</body>
+</html>
+

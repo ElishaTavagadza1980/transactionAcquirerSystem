@@ -1,0 +1,14 @@
+{% for user in users %}
+<tr>
+    <td>{{ user.username }}</td>
+    <td>{{ 'Yes' if user.use_2fa else 'No' }}</td>
+    <td>{{ 'Active' if user.is_active else 'Inactive' }}</td>
+    <td>
+        <button class="btn btn-sm btn-warning" onclick="editUser('{{ user.user_id }}')">Edit</button>        
+        <button class="btn btn-sm btn-{{ 'danger' if user.is_active else 'success' }}" 
+                onclick="toggleActive('{{ user.user_id }}', '{{ user.is_active | lower }}')">
+            {{ 'Deactivate' if user.is_active else 'Activate' }}
+        </button>
+    </td>
+</tr>
+{% endfor %}

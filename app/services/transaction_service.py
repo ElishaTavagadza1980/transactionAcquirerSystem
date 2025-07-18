@@ -369,3 +369,26 @@ class TransactionService:
 
     def get_transaction_by_retrieval(self, retrieval_ref: str):
         return dataGetacquiredtransactionsByRetrieval(retrieval_ref)
+    
+    def get_transaction_statistics(self):
+        transactions = self.get_transactions()
+        
+        total_amount = 0.0
+        active_count = 0
+        blocked_count = 0
+        currency = "USD"  # or infer from transactions if needed
+
+        for txn in transactions:
+            if txn.status == "APPROVED":
+                total_amount += int(txn.de_4_amount_transaction) / 100.0
+                active_count += 1
+            else:
+                blocked_count += 1
+
+        return {
+            "total_transactions": len(transactions),
+            "total_amount": total_amount,
+            "active_count": active_count,
+            "blocked_count": blocked_count,
+            "currency": currency
+        }

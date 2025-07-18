@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "./common/dependencies.html" %}
+    <title>Users List - Transaction Acquirer System</title>
+</head>
+<body>
+    {% include 'common/nav.html' %}
+    <div class="container mt-5">
+        <h2>Users List</h2>
+        <a href="/users/update" class="btn btn-primary mb-3">Add New User</a>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>2FA Enabled</th>
+                    <th>Active</th>
+                    <th>Created At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="users-table">
+                {% for user in users %}
+                    {% include 'users_tr.html' %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        async function editUser(userId) {
+            window.location.href = `/users/edit/${userId}`;
+        }
+
+        async function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                const response = await fetch(`/users/${userId}`, { 
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to delete user');
+                }
+            }
+        }
+
+        async function toggleActive(userId, isActive) {
+            const response = await fetch(`/users/${userId}/toggle`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ is_active: isActive === 'true' ? false : true }),
+                credentials: 'include'
+            });
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                alert('Failed to toggle user status');
+            }
+        }
+    </script>
+</body>
+</html>
