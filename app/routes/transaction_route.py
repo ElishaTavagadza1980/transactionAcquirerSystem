@@ -130,3 +130,14 @@ def get_test_transaction_form(request: Request):
     except Exception as e:
         logger.error(f"Error rendering test transaction form: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal service error")
+    
+
+@router.get("/transaction-statistics")
+def get_transaction_stats_over_time():
+    try:
+        from app.data_access.transaction_supabase import dataGetTransactionStatsOverTime
+        stats = dataGetTransactionStatsOverTime()
+        return stats
+    except Exception as e:
+        logger.error(f"Error in /api/transaction-statistics: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch statistics")

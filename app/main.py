@@ -51,6 +51,10 @@ async def require_authentication(request: Request, call_next):
         logger.info(f"Allowing public path: {request.url.path}")
         return await call_next(request)
     
+    # Exclude specific endpoint from authentication
+    if request.url.path == "/transaction/acquiredtransactions":
+        return await call_next(request)
+    
     session_id = request.cookies.get(SESSION_COOKIE_NAME)
     if not session_id or session_id not in session_store:
         logger.info("Unauthorized: No valid session, redirecting to /")

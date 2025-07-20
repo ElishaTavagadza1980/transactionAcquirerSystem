@@ -357,7 +357,7 @@ class TransactionService:
     def _validate_service_code(self, transaction: Transaction, service_code: str) -> bool:
         if not service_code:
             return False
-        if len(service_code) > 0 and transaction.de_3_processing_code.startswith("00") and service_code[0] in ("2", "6"):
+        if len(service_code) > 0 and transaction.de_3_processing_code.startswith("00") and service_code[0] in ("1", "6"):
             return True
         return False
 

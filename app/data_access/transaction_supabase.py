@@ -6,6 +6,7 @@ from typing import List, Optional
 from fastapi import HTTPException
 from datetime import datetime, timezone
 import logging
+from collections import defaultdict
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -73,3 +74,47 @@ def dataGetacquiredtransactionsByRetrieval(retrievalReferenceNumber: str, mti: O
     except Exception as e:
         logger.error(f"Failed to retrieve acquiredtransactions for retrieval reference {retrievalReferenceNumber}: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to retrieve transactions by retrieval: {str(e)}")
+    
+def dataGetTransactionStatsOverTime() -> dict:
+    try:
+        # Get all 0110 transactions (responses)
+        response = supabase.table("acquiredtransactions").select("created_at", "status").eq("message_type_indicator", "0110").execute()
+
+        if not response.data:
+            return {"labels": [], "totalTransactions": [], "approvedTransactions": [], "declinedTransactions": []}
+
+        # Count transactions per day
+        date_counts = defaultdict(int)
+        approved_counts = defaultdict(int)
+        declined_counts = defaultdict(int)
+
+        for row in response.data:
+            # Parse and normalize date
+            dt = datetime.fromisoformat(row["created_at"].replace("Z", "+00:00"))
+            date_str = dt.strftime("%Y-%m-%d")
+            date_counts[date_str] += 1
+            
+            # Categorize by status
+            if row["status"] == "APPROVED":
+                approved_counts[date_str] += 1
+            else:
+                declined_counts[date_str] += 1
+
+        # Sort by date
+        sorted_dates = sorted(date_counts.keys())
+        labels = sorted_dates
+        total_transactions = [date_counts[date] for date in sorted_dates]
+        approved_transactions = [approved_counts[date] for date in sorted_dates]
+        declined_transactions = [declined_counts[date] for date in sorted_dates]
+
+        return {
+            "labels": labels,
+            "totalTransactions": total_transactions,
+            "approvedTransactions": approved_transactions,
+            "declinedTransactions": declined_transactions
+        }
+
+    except Exception as e:
+        logger.error(f"Failed to get transaction statistics over time: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to fetch transaction chart data")
+

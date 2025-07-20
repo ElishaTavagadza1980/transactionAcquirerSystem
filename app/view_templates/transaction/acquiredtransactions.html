@@ -160,65 +160,87 @@
     </div>
 
     <!-- Modal -->
-    <div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true" data-current-retrieval-ref="">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header d-flex flex-column align-items-start">
-                    <h5 class="modal-title mb-2" id="transactionModalLabel">Transaction Details</h5>
-                </div>
-                <div class="modal-body">
-                    <div class="mti-container">
-                        <div class="mti-block" id="mti0100Content">
-                            <h6>MTI 0100</h6>
-                            <div class="mti-content">
-                                <p>Loading...</p>
-                            </div>
+<div class="modal fade" id="transactionModal" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true" data-current-retrieval-ref="">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header d-flex flex-column align-items-start">
+                <h5 class="modal-title mb-2" id="transactionModalLabel">Transaction Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mti-container">
+                    <div class="mti-block" id="mti0100Content">
+                        <h6>MTI 0100</h6>
+                        <div class="mti-content">
+                            <p>Loading...</p>
                         </div>
-                        <div class="mti-block" id="mti0110Content">
-                            <h6>MTI 0110</h6>
-                            <div class="mti-content">
-                                <p>Loading...</p>
-                            </div>
+                    </div>
+                    <div class="mti-block" id="mti0110Content">
+                        <h6>MTI 0110</h6>
+                        <div class="mti-content">
+                            <p>Loading...</p>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
+
 
     <!-- JavaScript for Modal Trigger -->
-    <script>
-        document.addEventListener('click', function(event) {
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle row click to open modal
+        document.addEventListener('click', function (event) {
             const row = event.target.closest('tr[data-retrieval-ref]');
             if (row) {
                 const retrievalRef = row.getAttribute('data-retrieval-ref');
                 // Set the retrieval ref on the modal and update title
-                document.querySelector('#transactionModal').setAttribute('data-current-retrieval-ref', retrievalRef);
-                document.querySelector('#transactionModalLabel').textContent = `Transaction Details - Retrieval Ref: ${retrievalRef}`;
-                // Trigger htmx requests for MTI 0100 and MTI 0110
-                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0100`, { target: '#mti0100Content' });
-                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0110`, { target: '#mti0110Content' });
-                // Show the modal
-                const modal = new bootstrap.Modal(document.getElementById('transactionModal'));
+                const modalElement = document.getElementById('transactionModal');
+                modalElement.setAttribute('data-current-retrieval-ref', retrievalRef);
+                document.getElementById('transactionModalLabel').textContent =
+                    `Transaction Details - Retrieval Ref: ${retrievalRef}`;
+                // Trigger HTMX requests for MTI 0100 and 0110
+                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0100`, {
+                    target: '#mti0100Content'
+                });
+                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0110`, {
+                    target: '#mti0110Content'
+                });
+
+                // Show modal
+                const modal = new bootstrap.Modal(modalElement);
                 modal.show();
             }
         });
 
-        // Handle MTI link clicks in the modal (if added later)
+        // Cleanup backdrop on modal hidden
+        const modalElement = document.getElementById('transactionModal');
+        modalElement.addEventListener('hidden.bs.modal', function () {
+            document.body.classList.remove('modal-open');
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+        });
+
+        // Bind MTI link clicks (if present at load time)
         document.querySelectorAll('.mti-link').forEach(link => {
-            link.addEventListener('click', function(event) {
+            link.addEventListener('click', function (event) {
                 event.preventDefault();
                 const mti = this.getAttribute('data-mti');
                 const target = this.getAttribute('data-hx-target');
-                const retrievalRef = document.querySelector('#transactionModal').getAttribute('data-current-retrieval-ref') || '';
-                if (retrievalRef) {
-                    htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=${mti}`, { target });
+                const retrievalRef = modalElement.getAttribute('data-current-retrieval-ref') || '';
+                if (retrievalRef && target) {
+                    htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=${mti}`, {
+                        target
+                    });
                 }
             });
         });
-    </script>
+    });
+</script>
 </body>
 </html>
