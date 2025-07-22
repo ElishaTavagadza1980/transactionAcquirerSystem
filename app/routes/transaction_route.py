@@ -9,7 +9,7 @@ from app.data_access.transaction_supabase import (
 from app.services.transaction_service import TransactionService
 from app.models.transaction_model import Transaction
 from datetime import datetime
-
+from app.utils import get_current_user
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -32,18 +32,28 @@ def get_home_page(request: Request, transaction_service: TransactionService = De
         raise HTTPException(status_code=500, detail="Internal service error")
 
 @router.get("/acquiredtransactions", response_class=HTMLResponse)
-def get_acquiredtransactions(request: Request, filterBy: str = Query(None), searchTerm: str = Query(None)):
+async def get_acquiredtransactions(
+    request: Request,
+    filterBy: str = Query(None),
+    searchTerm: str = Query(None),
+    user=Depends(get_current_user)
+):
     try:
         acquiredtransactions = dataGetacquiredtransactions(filter_by=filterBy, search_term=searchTerm)
-        logger.info(f"Retrieved {len(acquiredtransactions)} acquiredtransactions for display")
+        context = {"request": request, "acquiredtransactions": acquiredtransactions or []}
+        if user:
+            context["user"] = user
+            logger.info(f"Retrieved {len(acquiredtransactions)} acquiredtransactions for user {user['username']}")
+        else:
+            logger.info(f"Retrieved {len(acquiredtransactions)} acquiredtransactions for unauthenticated user")
         if "HX-Request" in request.headers:
             return templates.TemplateResponse(
                 "transaction/partials/transaction_list.html",
-                {"request": request, "acquiredtransactions": acquiredtransactions or []}
+                context
             )
         return templates.TemplateResponse(
             "transaction/acquiredtransactions.html",
-            {"request": request, "acquiredtransactions": acquiredtransactions or []}
+            context
         )
     except Exception as e:
         logger.error(f"Error retrieving acquiredtransactions: {str(e)}")

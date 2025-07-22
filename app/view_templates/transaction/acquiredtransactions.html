@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% include "./common/head.html" ignore missing with context %}
     {% include "./common/dependencies.html" ignore missing with context %}
-    <!-- Ensure htmx and Bootstrap are included -->
-    <script src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeW8l5VFJE6s4CnR1uep4gWiu3tv3I50t+ZR4b+2MQ9B4OK1W6Hav3z" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <style>
         .content-container {
             padding: 20px;
@@ -95,7 +92,7 @@
     </style>
 </head>
 <body>
-    {% include "./common/nav.html" ignore missing with context %}
+    {% include "./common/nav.html" %}
     <div class="content-container">
         <div class="row">
             <div class="col-12">

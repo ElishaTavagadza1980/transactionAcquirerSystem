@@ -9,19 +9,29 @@ from fastapi.templating import Jinja2Templates
 import logging
 from app.models.users_model import ToggleActiveRequest
 from fastapi import Query
+from app.utils import get_current_user
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format="%(asctime)s [%(levelname)s] %(message)s"
-)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/view_templates")
 
 @router.get("/", response_class=HTMLResponse)
-def get_users_page(request: Request, user_service: UserService = Depends(UserService)):
-    users = user_service.get_users()
-    return templates.TemplateResponse("users/users.html", {"request": request, "users": users}) 
+async def get_users_page(request: Request, user=Depends(get_current_user), user_service: UserService = Depends(UserService)):
+    if not user:
+        logger.info("Unauthorized access to /users: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    try:
+        users = user_service.get_users()
+        logger.info(f"Rendering users page for user {user['username']}")
+        return templates.TemplateResponse(
+            "users/users.html",
+            {"request": request, "users": users, "user": user}
+        )
+    except Exception as e:
+        logger.error(f"Error rendering users page: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/list", response_class=HTMLResponse)
 def get_users_list_page(request: Request, user_service: UserService = Depends(UserService)):
@@ -115,39 +125,6 @@ def toggle_user_active(user_id: UUID, payload: ToggleActiveRequest, user_service
         logging.exception("Error toggling user active status")
         raise HTTPException(status_code=500, detail=str(e))
     
-@router.post("/login")
-def login(
-    request: Request,
-    response: Response,
-    username: str = Form(...),
-    password: str = Form(...),
-    twofa_code: str = Form(None),
-    user_service: UserService = Depends(UserService)
-):
-    result = user_service.authenticate_user(username, password, twofa_code)
-    if result.get("success"):
-        session_id = str(uuid4())
-        session_data = {
-            "user_id": str(result["user"]["user_id"]),
-            "expires_at": time.time() + SESSION_EXPIRATION_SECONDS
-        }
-        session_store[session_id] = session_data
-        response.set_cookie(
-            key=SESSION_COOKIE_NAME,
-            value=session_id,
-            httponly=True,
-            max_age=SESSION_EXPIRATION_SECONDS
-        )
-        return RedirectResponse(url="/", status_code=303)  # Redirect to home page on success
-    return result
-
-@router.get("/logout")
-def logout(request: Request, response: Response):
-    session_id = request.cookies.get(SESSION_COOKIE_NAME)
-    if session_id and session_id in session_store:
-        del session_store[session_id]
-        response.delete_cookie(SESSION_COOKIE_NAME)
-    return RedirectResponse(url="/login", status_code=303)
 
 
 

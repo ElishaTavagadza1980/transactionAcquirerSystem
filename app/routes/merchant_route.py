@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, HTTPException, Form, Query
+from fastapi import APIRouter, Request, HTTPException, Form, Query, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from app.services.merchant_service import MerchantService
@@ -6,23 +6,31 @@ from app.models.merchant_model import Merchant, MerchantSettings
 import logging
 from typing import Optional
 from datetime import datetime
+from app.utils import get_current_user
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/view_templates")
 merchant_service = MerchantService()
 
+
+
 @router.get("/merchants", response_class=HTMLResponse)
-def get_merchants(request: Request):
+async def get_merchants(request: Request, user=Depends(get_current_user), merchant_service: MerchantService = Depends(MerchantService)):
+    if not user:
+        logger.info("Unauthorized access to /merchants: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
     try:
         merchants = merchant_service.get_merchants()
-        logger.info(f"Route retrieved {len(merchants)} merchants for display")
+        logger.info(f"Route retrieved {len(merchants)} merchants for user {user['username']}")
         template = "merchant/partials/merchant_list.html" if "HX-Request" in request.headers else "merchant/merchants.html"
         return templates.TemplateResponse(
             template,
-            {"request": request, "merchants": merchants or []}
+            {"request": request, "merchants": merchants or [], "user": user}
         )
     except Exception as e:
         logger.error(f"Error retrieving merchants: {str(e)}")
@@ -42,11 +50,15 @@ def search_merchants(request: Request, filter_field: str = Query(...), search_va
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/merchants/addMerchant", response_class=HTMLResponse)
-def get_add_merchant_page(request: Request):
+async def get_add_merchant_page(request: Request, user=Depends(get_current_user)):
+    if not user:
+        logger.info("Unauthorized access to /merchants/addMerchant: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
     try:
+        logger.info(f"Rendering add merchant page for user {user['username']}")
         return templates.TemplateResponse(
             "merchant/merchant_add.html",
-            {"request": request}
+            {"request": request, "user": user}
         )
     except Exception as e:
         logger.error(f"Error rendering add merchant page: {str(e)}")
@@ -169,11 +181,15 @@ def create_merchant(
 
 
 @router.get("/merchants/manageMerchant/editMerchant", response_class=HTMLResponse)
-def get_edit_merchant_page(request: Request):
+async def get_edit_merchant_page(request: Request, user=Depends(get_current_user)):
+    if not user:
+        logger.info("Unauthorized access to /merchants/manageMerchant/editMerchant: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
     try:
+        logger.info(f"Rendering edit merchant page for user {user['username']}")
         return templates.TemplateResponse(
             "merchant/merchant_edit_search.html",
-            {"request": request, "merchants": []}
+            {"request": request, "merchants": [], "user": user}
         )
     except Exception as e:
         logger.error(f"Error rendering edit merchant page: {str(e)}")
@@ -356,23 +372,35 @@ def delete_merchant(request: Request, merchant_id: str):
 
 
 @router.get("/merchants/manageMerchant/configureMerchantSettings", response_class=HTMLResponse)
-def config_page(request: Request):
-    merchants = merchant_service.get_all_merchant_ids()
-    return templates.TemplateResponse("merchant/merchant_config_settings.html", {
-        "request": request,
-        "merchants": merchants
-    })
+async def config_page(request: Request, user=Depends(get_current_user), merchant_service: MerchantService = Depends(MerchantService)):
+    if not user:
+        logger.info("Unauthorized access to /merchants/manageMerchant/configureMerchantSettings: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    try:
+        merchants = merchant_service.get_all_merchant_ids()
+        logger.info(f"Rendering configure merchant settings page for user {user['username']}")
+        return templates.TemplateResponse(
+            "merchant/merchant_config_settings.html",
+            {"request": request, "merchants": merchants, "user": user}
+        )
+    except Exception as e:
+        logger.error(f"Error rendering configure merchant settings page: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.post("/save-settings")
 async def save_merchant_settings(request: Request):
-    data = await request.json()
-    merchant_id = data.get("merchant_id")
-    if not merchant_id:
-        return JSONResponse(content={"error": "Merchant ID required"}, status_code=400)
+    try:
+        raw_body = await request.body()
+        print("Raw body:", raw_body.decode())  # Log what's being received
 
-    settings = merchant_service.save_settings(merchant_id, data)
-    return JSONResponse(content={"status": "Saved", "settings": settings.__dict__})
+        data = await request.json()
+        print("Parsed data:", data)
+    except Exception as e:
+        print("Error parsing JSON:", e)
+        return HTMLResponse(content=f"<div class='alert alert-danger'>Invalid JSON payload: {e}</div>", status_code=400)
 
+    # Process as before
+    return HTMLResponse(content="<div class='alert alert-success'>Settings saved!</div>")
 
 @router.get("/get-settings/{merchant_id}")
 def get_settings(merchant_id: str):

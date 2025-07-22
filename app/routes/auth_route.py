@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, Form, Request, status
+from fastapi import APIRouter, HTTPException, Form, Request, Response
 from fastapi.responses import RedirectResponse, HTMLResponse
 from app.config import session_store, SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS
-from app.data_access.users_supabase import UserSupabase
+from app.data_access.auth_supabase import AuthSupabase
 import secrets
 import time
 import logging
@@ -9,15 +9,11 @@ import pyotp
 
 from fastapi.templating import Jinja2Templates
 
-
-
-templates = Jinja2Templates(directory="app/view_templates")  # adjust if needed
+templates = Jinja2Templates(directory="app/view_templates") 
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
-user_supabase = UserSupabase()
-
-
+auth_supabase = AuthSupabase()
 
 @router.post("/login", response_class=HTMLResponse)
 async def login(
@@ -29,7 +25,7 @@ async def login(
     try:
         logger.debug(f"🔍 Received login request: username={username}, twofa_code={twofa_code}")
 
-        user = user_supabase.authenticate_user(username, password)
+        user = auth_supabase.authenticate_user(username, password)
         logger.debug(f"👤 authenticate_user() returned: {user}")
 
         if not user:
@@ -78,3 +74,14 @@ async def login(
             {"request": request, "error_message": e.detail, "username": username},
             status_code=e.status_code
         )
+@router.get("/logout")
+def logout(request: Request, response: Response):
+    session_id = request.cookies.get(SESSION_COOKIE_NAME)
+    if session_id and session_id in session_store:
+        del session_store[session_id]
+        response.delete_cookie(SESSION_COOKIE_NAME)
+    return RedirectResponse(url="/", status_code=303)
+
+
+
+

@@ -10,18 +10,20 @@
         .txn-type-section { display: none; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4 font-sans">
+     <!-- Navigation Bar -->
+     {% include "./common/nav.html" ignore missing with context %}
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Merchant Settings</h1>
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Merchant Settings</h1>
 
-        <!-- Merchant ID Input -->
-        <div class="mb-6">
-            <h2 class="text-lg font-semibold text-gray-700 mb-2">Enter Merchant ID</h2>
-            <div class="flex gap-2">
-                <input type="text" id="merchant_id_input" placeholder="e.g. M123456" required
+        <!-- Merchant ID Search Section -->
+        <div class="mb-8 p-4 border border-gray-200 rounded-md bg-gray-50">
+            <h2 class="text-lg font-semibold text-gray-700 mb-3">Find Merchant</h2>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <input type="text" id="merchant_id_input" placeholder="Enter Merchant ID (e.g., M123456)" required
                        class="flex-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 <button type="button" onclick="loadMerchantSettings()"
-                        class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition">
+                        class="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition duration-200 ease-in-out transform hover:scale-105">
                     Search
                 </button>
             </div>
@@ -31,321 +33,329 @@
         <form id="config-form" class="hidden">
             <input type="hidden" id="merchant_id" name="merchant_id">
 
-            <!-- Card Types -->
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">Card Types</h2>
-                <div class="grid grid-cols-2 gap-2">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="Visa" name="card_types" class="h-4 w-4 text-blue-600">
-                        <span>Visa</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="MasterCard" name="card_types" class="h-4 w-4 text-blue-600">
-                        <span>MasterCard</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="Amex" name="card_types" class="h-4 w-4 text-blue-600">
-                        <span>American Express</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="Discover" name="card_types" class="h-4 w-4 text-blue-600">
-                        <span>Discover</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="JCB" name="card_types" class="h-4 w-4 text-blue-600">
-                        <span>JCB</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="DinersClub" name="card_types" class="h-4 w-4 text-blue-600">
-                        <span>Diners Club</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="UnionPay" name="card_types" class="h-4 w-4 text-blue-600">
-                        <span>UnionPay</span>
-                    </label>
-                </div>
-            </div>
+            <!-- Main Configuration Sections -->
+            <div id="main-settings-content">
+                <h2 class="text-xl font-bold text-gray-800 mb-5">Configure Settings</h2>
 
-            <!-- Currencies -->
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">Currencies</h2>
-                <div class="grid grid-cols-2 gap-2">
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="840" name="currencies" class="h-4 w-4 text-blue-600">
-                        <span>USD</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="978" name="currencies" class="h-4 w-4 text-blue-600">
-                        <span>EUR</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="826" name="currencies" class="h-4 w-4 text-blue-600">
-                        <span>GBP</span>
-                    </label>
-                    <label class="flex items-center gap-2">
-                        <input type="checkbox" value="All" name="currencies" class="h-4 w-4 text-blue-600">
-                        <span>All</span>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Interface Modes and Transaction Types -->
-            <div class="mb-6">
-                <h2 class="text-lg font-semibold text-gray-700 mb-2">Interface Modes</h2>
-                <div class="space-y-4">
-                    <!-- ATM -->
-                    <div>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" value="ATM" name="interface_modes" onchange="toggleTxnTypes('ATM')"
-                                   class="h-4 w-4 text-blue-600">
-                            <span>ATM</span>
+                <!-- Card Types -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Card Types Accepted</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="Visa" name="card_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">Visa</span>
                         </label>
-                        <div id="txn-types-ATM" class="txn-type-section ml-6 mt-2">
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">ATM Transaction Types</h3>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Cash Withdrawal" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Cash Withdrawal</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Balance Inquiry" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Balance Inquiry</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Mini Statement" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Mini Statement</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Funds Transfer" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Funds Transfer</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Cash Deposit" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Cash Deposit</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Cheque Deposit" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Cheque Deposit</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="PIN Change" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>PIN Change</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Bill Payments" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Bill Payments</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Mobile Recharge" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Mobile Recharge / Top-Up</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- POS Contact -->
-                    <div>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" value="POS Contact" name="interface_modes" onchange="toggleTxnTypes('POS Contact')"
-                                   class="h-4 w-4 text-blue-600">
-                            <span>POS Contact</span>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="MasterCard" name="card_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">MasterCard</span>
                         </label>
-                        <div id="txn-types-POS Contact" class="txn-type-section ml-6 mt-2">
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">POS Contact Transaction Types</h3>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Purchase</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Refund" name—”
-                                    <span>Refund</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Pre-Authorization</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Completion</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Void</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Cashback" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Cashback</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Reversal</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Balance Inquiry" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Balance Inquiry</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- POS Contactless -->
-                    <div>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" value="POS Contactless" name="interface_modes" onchange="toggleTxnTypes('POS Contactless')"
-                                   class="h-4 w-4 text-blue-600">
-                            <span>POS Contactless</span>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="Amex" name="card_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">American Express</span>
                         </label>
-                        <div id="txn-types-POS Contactless" class="txn-type-section ml-6 mt-2">
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">POS Contactless Transaction Types</h3>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Purchase</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Refund</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Pre-A Authorization</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Completion</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Void</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Reversal</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Ecommerce -->
-                    <div>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" value="Ecommerce" name="interface_modes" onchange="toggleTxnTypes('Ecommerce')"
-                                   class="h-4 w-4 text-blue-600">
-                            <span>Ecommerce</span>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="Discover" name="card_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">Discover</span>
                         </label>
-                        <div id="txn-types-Ecommerce" class="txn-type-section ml-6 mt-2">
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">Ecommerce Transaction Types</h3>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Purchase</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Refund</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Pre-Authorization</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Completion</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Void</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Reversal</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Apple Pay -->
-                    <div>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" value="Apple Pay" name="interface_modes" onchange="toggleTxnTypes('Apple Pay')"
-                                   class="h-4 w-4 text-blue-600">
-                            <span>Apple Pay</span>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="JCB" name="card_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">JCB</span>
                         </label>
-                        <div id="txn-types-Apple Pay" class="txn-type-section ml-6 mt-2">
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">Apple Pay Transaction Types</h3>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Purchase</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Refund</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Pre-Authorization</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Completion</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Void</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Reversal</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Google Pay -->
-                    <div>
-                        <label class="flex items-center gap-2">
-                            <input type="checkbox" value="Google Pay" name="interface_modes" onchange="toggleTxnTypes('Google Pay')"
-                                   class="h-4 w-4 text-blue-600">
-                            <span>Google Pay</span>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="DinersClub" name="card_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">Diners Club</span>
                         </label>
-                        <div id="txn-types-Google Pay" class="txn-type-section ml-6 mt-2">
-                            <h3 class="text-sm font-medium text-gray-600 mb-1">Google Pay Transaction Types</h3>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Purchase</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Refund</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Pre-Authorization</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Completion</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Void</span>
-                                </label>
-                                <label class="flex items-center gap-2">
-                                    <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600">
-                                    <span>Reversal</span>
-                                </label>
-                            </div>
-                        </div>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="UnionPay" name="card_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">UnionPay</span>
+                        </label>
                     </div>
                 </div>
-            </div>
 
-            <!-- Save Button -->
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition w-full">
-                Save Settings
-            </button>
+                <!-- Currencies -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Supported Currencies</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="840" name="currencies" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">USD</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="978" name="currencies" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">EUR</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="826" name="currencies" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">GBP</span>
+                        </label>
+                        <label class="flex items-center p-2 rounded-md hover:bg-gray-50 cursor-pointer">
+                            <input type="checkbox" value="All" name="currencies" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                            <span class="ml-2 text-gray-700">All Currencies</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Interface Modes and Transaction Types -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Interface Modes & Transaction Types</h3>
+                    <div class="space-y-4">
+                        <!-- ATM -->
+                        <div class="border border-gray-200 p-3 rounded-md bg-gray-50">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-gray-800">
+                                <input type="checkbox" value="ATM" name="interface_modes" onchange="toggleTxnTypes('ATM')"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                <span>ATM</span>
+                            </label>
+                            <div id="txn-types-ATM" class="txn-type-section ml-6 mt-3 p-3 bg-white rounded-md border border-gray-100">
+                                <h4 class="text-sm font-medium text-gray-600 mb-2">ATM Transaction Types</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Cash Withdrawal" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Cash Withdrawal</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Balance Inquiry" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Balance Inquiry</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Mini Statement" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Mini Statement</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Funds Transfer" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Funds Transfer</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Cash Deposit" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Cash Deposit</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Cheque Deposit" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Cheque Deposit</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="PIN Change" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>PIN Change</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Bill Payments" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Bill Payments</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Mobile Recharge" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Mobile Recharge / Top-Up</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- POS Contact -->
+                        <div class="border border-gray-200 p-3 rounded-md bg-gray-50">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-gray-800">
+                                <input type="checkbox" value="POS Contact" name="interface_modes" onchange="toggleTxnTypes('POS Contact')"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                <span>POS Contact</span>
+                            </label>
+                            <div id="txn-types-POS-Contact" class="txn-type-section ml-6 mt-3 p-3 bg-white rounded-md border border-gray-100">
+                                <h4 class="text-sm font-medium text-gray-600 mb-2">POS Contact Transaction Types</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Purchase</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Refund</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Pre-Authorization</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Completion</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Void</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Cashback" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Cashback</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Reversal</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Balance Inquiry" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Balance Inquiry</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- POS Contactless -->
+                        <div class="border border-gray-200 p-3 rounded-md bg-gray-50">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-gray-800">
+                                <input type="checkbox" value="POS Contactless" name="interface_modes" onchange="toggleTxnTypes('POS Contactless')"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                <span>POS Contactless</span>
+                            </label>
+                            <div id="txn-types-POS-Contactless" class="txn-type-section ml-6 mt-3 p-3 bg-white rounded-md border border-gray-100">
+                                <h4 class="text-sm font-medium text-gray-600 mb-2">POS Contactless Transaction Types</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Purchase</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Refund</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Pre-Authorization</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Completion</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Void</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Reversal</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Ecommerce -->
+                        <div class="border border-gray-200 p-3 rounded-md bg-gray-50">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-gray-800">
+                                <input type="checkbox" value="Ecommerce" name="interface_modes" onchange="toggleTxnTypes('Ecommerce')"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                <span>Ecommerce</span>
+                            </label>
+                            <div id="txn-types-Ecommerce" class="txn-type-section ml-6 mt-3 p-3 bg-white rounded-md border border-gray-100">
+                                <h4 class="text-sm font-medium text-gray-600 mb-2">Ecommerce Transaction Types</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Purchase</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Refund</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Pre-Authorization</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Completion</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Void</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Reversal</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Apple Pay -->
+                        <div class="border border-gray-200 p-3 rounded-md bg-gray-50">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-gray-800">
+                                <input type="checkbox" value="Apple Pay" name="interface_modes" onchange="toggleTxnTypes('Apple Pay')"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                <span>Apple Pay</span>
+                            </label>
+                            <div id="txn-types-Apple-Pay" class="txn-type-section ml-6 mt-3 p-3 bg-white rounded-md border border-gray-100">
+                                <h4 class="text-sm font-medium text-gray-600 mb-2">Apple Pay Transaction Types</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Purchase</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Refund</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Pre-Authorization</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Completion</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Void</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Reversal</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Google Pay -->
+                        <div class="border border-gray-200 p-3 rounded-md bg-gray-50">
+                            <label class="flex items-center gap-2 cursor-pointer font-medium text-gray-800">
+                                <input type="checkbox" value="Google Pay" name="interface_modes" onchange="toggleTxnTypes('Google Pay')"
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                <span>Google Pay</span>
+                            </label>
+                            <div id="txn-types-Google-Pay" class="txn-type-section ml-6 mt-3 p-3 bg-white rounded-md border border-gray-100">
+                                <h4 class="text-sm font-medium text-gray-600 mb-2">Google Pay Transaction Types</h4>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Purchase" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Purchase</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Refund" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Refund</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Pre-Authorization" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Pre-Authorization</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Completion" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Completion</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Void" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Void</span>
+                                    </label>
+                                    <label class="flex items-center gap-2">
+                                        <input type="checkbox" value="Reversal" name="txn_types" class="h-4 w-4 text-blue-600 focus:ring-blue-500 rounded">
+                                        <span>Reversal</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-green-700 transition duration-200 ease-in-out w-full transform hover:scale-105 mt-6">
+                    Save Settings
+                </button>
+            </div>
         </form>
 
         <!-- Output -->
-        <pre id="output" class="mt-6 bg-gray-50 p-4 rounded-md text-sm text-gray-700"></pre>
+        <div id="output-section" class="mt-8 p-4 bg-gray-50 rounded-md border border-gray-200 hidden">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Response:</h2>
+            <pre id="output" class="text-sm text-gray-700 whitespace-pre-wrap font-mono"></pre>
+        </div>
     </div>
 
     <script>
@@ -356,7 +366,7 @@
         }
 
         function toggleTxnTypes(mode) {
-            const section = document.getElementById(`txn-types-${mode}`);
+            const section = document.getElementById(`txn-types-${mode.replace(/\s+/g, '-')}`);
             const checkbox = document.querySelector(`input[value="${mode}"]`);
             section.style.display = checkbox.checked ? 'block' : 'none';
             if (!checkbox.checked) {

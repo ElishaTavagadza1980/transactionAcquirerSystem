@@ -1,5 +1,5 @@
 <!-- templates/common/nav.html -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-body-tertiary justify-content-center" data-bs-theme="dark">
     <div class="container-fluid">
         <!-- Toggler for small screens -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
@@ -10,13 +10,13 @@
         <!-- Collapse menu and links -->
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">Home</a>
+                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/home">Home</a>
                 <a class="nav-link {% if request.path == '/transaction/acquiredtransactions' %}active{% endif %}" href="/transaction/acquiredtransactions">Transaction</a>
 
                 <!-- Merchants Dropdown -->
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {% if request.path.startswith('/merchant/merchants') %}active{% endif %}" 
-                       href="#" id="merchantsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                       id="merchantsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Merchants
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="merchantsDropdown">
@@ -38,7 +38,7 @@
                 <!-- Terminals Dropdown -->
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {% if request.path.startswith('/terminal/terminals') %}active{% endif %}" 
-                       href="#" id="terminalsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                       id="terminalsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Terminals
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="terminalsDropdown">
@@ -51,7 +51,7 @@
                 <!-- Cards Dropdown -->
                 <div class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {% if request.path.startswith('/card/cards') %}active{% endif %}" 
-                       href="#" id="cardsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                       id="cardsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Cards
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="cardsDropdown">
@@ -59,27 +59,34 @@
                         <li><a class="dropdown-item" href="/card/cards/addCard">Add New Cards</a></li>
                     </ul>
                 </div>
-                <div>
-                <!-- Scheme Routing -->
-                <a class="nav-link {% if request.path.startswith('/schemerouting') %}active{% endif %}" href="/schemerouting/">Scheme Routing</a>
-                </div>
-                <div>
-            
-                <!-- Manage Users -->
-                <a class="nav-link {% if request.path.startswith('/users') %}active{% endif %}" href="/users/">Manage Users</a>
-                </div>
-        </div>
 
-        <!-- User Dropdown (Top-Right) -->
-        {% if user %}
-        <div class="dropdown ms-auto">
-            <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ user.username }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
-            </ul>
+                <!-- Scheme Routing -->
+                <div>
+                    <a class="nav-link {% if request.path.startswith('/schemerouting') %}active{% endif %}" href="/schemerouting/">Scheme Routing</a>
+                </div>
+
+                <!-- Manage Users -->
+                <div>
+                    <a class="nav-link {% if request.path.startswith('/users') %}active{% endif %}" href="/users/">Manage Users</a>
+                </div>
+                 <!-- Settlement -->
+                <div>
+                    <a class="nav-link {% if request.path.startswith('/settlement') %}active{% endif %}" href="/settlement/">Settlement</a>
+                </div>
+            </div>
+            </div>          
+
+            <!-- User Dropdown (Top-Right) -->
+            {% if user %}
+            <div class="dropdown ms-auto">
+                <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ user.username }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                    <li><a class="dropdown-item" href="/auth/logout">Logout</a></li>
+                </ul>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 </nav>

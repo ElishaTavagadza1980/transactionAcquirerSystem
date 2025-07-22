@@ -6,7 +6,7 @@ from fastapi.templating import Jinja2Templates
 from contextlib import asynccontextmanager
 import httpx
 import time
-import logging  # Import logging module
+import logging 
 from starlette.middleware.base import BaseHTTPMiddleware
 from app.config import session_store, SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS
 from app.routes.auth_route import router as auth_router
@@ -18,10 +18,11 @@ from app.routes.cards_route import router as cards_router
 from app.routes.schemerouting_route import router as schemerouting_router
 from app.utils import get_current_user
 from app.routes.home_route import router as home_router
+from app.routes.settlement_route import router as settlement_router
 
-# Set up logging
+
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)  # Initialize logger
+logger = logging.getLogger(__name__)  
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -31,7 +32,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Transaction Acquirer System", lifespan=lifespan)
 
-# Add CORS middleware
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -43,15 +44,15 @@ app.add_middleware(
 templates = Jinja2Templates(directory="app/view_templates")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Custom authentication middleware
+
 @app.middleware("http")
 async def require_authentication(request: Request, call_next):
-    public_paths = ["/login", "/auth/login", "/auth/logout", "/"]
+    public_paths = ["/login", "/auth/login", "/auth/logout","/"]
     if request.url.path in public_paths or request.url.path.startswith("/static"):
         logger.info(f"Allowing public path: {request.url.path}")
         return await call_next(request)
     
-    # Exclude specific endpoint from authentication
+   
     if request.url.path == "/transaction/acquiredtransactions":
         return await call_next(request)
     
@@ -78,6 +79,7 @@ app.include_router(merchant_router, prefix="/merchant")
 app.include_router(terminal_router, prefix="/terminal")
 app.include_router(cards_router, prefix="/card")
 app.include_router(schemerouting_router, prefix="/schemerouting")
+app.include_router(settlement_router, prefix="/settlement")
 
 @app.get("/", response_class=HTMLResponse)
 async def login_page(request: Request):

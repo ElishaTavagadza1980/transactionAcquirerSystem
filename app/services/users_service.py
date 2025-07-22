@@ -34,10 +34,7 @@ class UserService:
         return {"message": "User deleted successfully"}
 
     def toggle_user_active(self, user_id: UUID, is_active: bool):
-        return self.supabase.dataUpdateUser(user_id, UserUpdate(is_active=is_active))
-
-    def authenticate_user(self, username: str, password: str, twofa_code: str = None):
-        return self.supabase.authenticate_user(username, password, twofa_code)
+        return self.supabase.dataUpdateUser(user_id, UserUpdate(is_active=is_active))   
     
     def search_users_by_username(self, username: str):
         logging.debug(f"[SERVICE] Searching users with username like: {username}")

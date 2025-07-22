@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% include "./common/head.html" ignore missing with context %}
+    {% include "./common/dependencies.html" ignore missing with context %}
+    <style>
+        .content-container {
+            padding: 20px;
+            min-height: 80vh;
+        }
+        .search-form {
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn-group {
+            margin-top: 20px;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% include "./common/nav.html" ignore missing with context %}
+    <div class="content-container">
+        <div class="row">
+            <div class="col-12">
+                <div class="search-form">
+                    <form id="settlementForm" class="form">
+                        <div class="form-group">
+                            <label for="start_date">Start Date</label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" value="{{ start_date }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_date">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" value="{{ end_date }}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="merchant_id">Merchant ID (Optional)</label>
+                            <input type="text" class="form-control" id="merchant_id" name="merchant_id" placeholder="Enter Merchant ID">
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-primary" onclick="generateReport()">
+                                Generate Report
+                            </button>
+                            <button type="button" class="btn btn-success ms-2"
+                                    hx-post="/settlement/send"
+                                    hx-target="#settlementResult"
+                                    hx-include="#settlementForm"
+                                    hx-swap="innerHTML">
+                                Send Report
+                            </button>
+                        </div>
+                    </form>
+                    <div id="settlementResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        async function generateReport() {
+            const form = document.getElementById('settlementForm');
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+            const url = `/settlement/generate?${params.toString()}`;
+
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: { 'Accept': 'text/csv' }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const blob = await response.blob();
+                const contentDisposition = response.headers.get('Content-Disposition');
+                const filenameMatch = contentDisposition && contentDisposition.match(/filename="(.+?)"/);
+                const filename = filenameMatch ? filenameMatch[1] : 'settlement_report.csv';
+
+             
+                if (window.showDirectoryPicker && typeof window.showDirectoryPicker === 'function') {
+                    try {
+                        const dirHandle = await window.showDirectoryPicker();
+                        const fileHandle = await dirHandle.getFileHandle(filename, { create: true });
+                        const writable = await fileHandle.createWritable();
+                        await writable.write(blob);
+                        await writable.close();
+                        document.getElementById('settlementResult').innerHTML = `
+                            <div class="alert alert-success">
+                                Settlement report saved successfully!
+                            </div>
+                        `;
+                    } catch (error) {
+                        console.error('File System Access API error:', error);
+                       
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        document.getElementById('settlementResult').innerHTML = `
+                            <div class="alert alert-success">
+                                Settlement report downloaded successfully!
+                            </div>
+                        `;
+                    }
+                } else {
+                  
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    document.getElementById('settlementResult').innerHTML = `
+                        <div class="alert alert-success">
+                            Settlement report downloaded successfully!
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error generating report:', error);
+                document.getElementById('settlementResult').innerHTML = `
+                    <div class="alert alert-danger">
+                        Failed to generate settlement report: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+          
+            document.body.addEventListener('htmx:afterRequest', function (event) {
+                if (event.detail.xhr.status === 200 && event.detail.requestConfig.verb === 'post') {
+                    document.getElementById('settlementResult').innerHTML = `
+                        <div class="alert alert-success">
+                            Settlement report sent successfully!
+                        </div>
+                    `;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

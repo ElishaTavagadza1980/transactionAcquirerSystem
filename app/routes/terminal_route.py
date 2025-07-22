@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, HTTPException, Form, Query
+from fastapi import APIRouter, Request, HTTPException, Form, Query, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from app.services.terminal_service import TerminalService
@@ -6,6 +6,7 @@ from app.models.terminal_model import Terminal
 import logging
 from typing import Optional
 from datetime import datetime
+from app.utils import get_current_user
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,14 +16,17 @@ templates = Jinja2Templates(directory="app/view_templates")
 terminal_service = TerminalService()
 
 @router.get("/terminals", response_class=HTMLResponse)
-def get_terminals(request: Request):
+async def get_terminals(request: Request, user=Depends(get_current_user), terminal_service: TerminalService = Depends(TerminalService)):
+    if not user:
+        logger.info("Unauthorized access to /terminals: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
     try:
         terminals = terminal_service.get_terminals()
-        logger.info(f"Route retrieved {len(terminals)} terminals for display")
+        logger.info(f"Route retrieved {len(terminals)} terminals for user {user['username']}")
         template = "terminal/partials/terminal_list.html" if "HX-Request" in request.headers else "terminal/terminals.html"
         return templates.TemplateResponse(
             template,
-            {"request": request, "terminals": terminals or []}
+            {"request": request, "terminals": terminals or [], "user": user}
         )
     except Exception as e:
         logger.error(f"Error retrieving terminals: {str(e)}")
@@ -42,11 +46,15 @@ def search_terminals(request: Request, filter_field: str = Query(...), search_va
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/terminals/addTerminal", response_class=HTMLResponse)
-def get_add_terminal_page(request: Request):
+async def get_add_terminal_page(request: Request, user=Depends(get_current_user)):
+    if not user:
+        logger.info("Unauthorized access to /terminals/addTerminal: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
     try:
+        logger.info(f"Rendering add terminal page for user {user['username']}")
         return templates.TemplateResponse(
             "terminal/terminal_add.html",
-            {"request": request}
+            {"request": request, "user": user}
         )
     except Exception as e:
         logger.error(f"Error rendering add terminal page: {str(e)}")
@@ -139,11 +147,15 @@ def create_terminal(
         )
 
 @router.get("/terminals/editTerminal", response_class=HTMLResponse)
-def get_edit_terminal_page(request: Request):
+async def get_edit_terminal_page(request: Request, user=Depends(get_current_user)):
+    if not user:
+        logger.info("Unauthorized access to /terminals/editTerminal: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
     try:
+        logger.info(f"Rendering edit terminal page for user {user['username']}")
         return templates.TemplateResponse(
             "terminal/terminal_edit_search.html",
-            {"request": request, "terminals": []}
+            {"request": request, "terminals": [], "user": user}
         )
     except Exception as e:
         logger.error(f"Error rendering edit terminal page: {str(e)}")

@@ -122,7 +122,9 @@ class MerchantService:
             result = self.data_access.get_settings(merchant_id)
             if result and result.data:
                 item = result.data[0]
+                self.logger.debug(f"Retrieved settings for {merchant_id}: {json.dumps(item, indent=2)}")
                 return MerchantSettings(**item)
+            self.logger.info(f"No settings found for {merchant_id}")
             return None
         except Exception as e:
             self.logger.error(f"Failed to get settings for {merchant_id}: {str(e)}")

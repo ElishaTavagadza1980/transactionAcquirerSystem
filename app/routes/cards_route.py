@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, HTTPException, UploadFile, File, Query
+from fastapi import APIRouter, Request, HTTPException, UploadFile, File, Query, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from app.services.card_service import CardService
@@ -8,6 +8,7 @@ import csv
 from io import StringIO
 from typing import List
 from datetime import datetime
+from app.utils import get_current_user
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,14 +18,17 @@ templates = Jinja2Templates(directory="app/view_templates")
 card_service = CardService()
 
 @router.get("/cards", response_class=HTMLResponse)
-def get_cards(request: Request):
+async def get_cards(request: Request, user=Depends(get_current_user), card_service: CardService = Depends(CardService)):
+    if not user:
+        logger.info("Unauthorized access to /cards: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
     try:
         cards = card_service.get_cards()
-        logger.info(f"Route retrieved {len(cards)} cards for display")
+        logger.info(f"Route retrieved {len(cards)} cards for user {user['username']}")
         template = "card/partials/card_list.html" if "HX-Request" in request.headers else "card/cards.html"
         return templates.TemplateResponse(
             template,
-            {"request": request, "cards": cards or []}
+            {"request": request, "cards": cards or [], "user": user}
         )
     except Exception as e:
         logger.error(f"Error retrieving cards: {str(e)}")
@@ -54,11 +58,15 @@ def search_cards(request: Request, filter_field: str = Query(...), search_value:
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @router.get("/cards/addCard", response_class=HTMLResponse)
-def get_add_cards_page(request: Request):
+async def get_add_cards_page(request: Request, user=Depends(get_current_user)):
+    if not user:
+        logger.info("Unauthorized access to /cards/addCard: No valid user session")
+        raise HTTPException(status_code=401, detail="Unauthorized")
     try:
+        logger.info(f"Rendering add cards page for user {user['username']}")
         return templates.TemplateResponse(
             "card/card_add.html",
-            {"request": request}
+            {"request": request, "user": user}
         )
     except Exception as e:
         logger.error(f"Error rendering add cards page: {str(e)}")
