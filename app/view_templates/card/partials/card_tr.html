@@ -1,10 +1,20 @@
-<tr id="card-{{ card.card_number }}">
-    <td>{{ card.card_number }}</td>
-    <td>{{ card.card_type }}</td>
-    <td>{{ card.card_holder_name }}</td>
-    <td>{{ card.card_status }}</td>
-    <td>{{ card.expiry_date }}</td>
-    <td>{{ card.balance }}</td>
-    <td>{{ card.received_at }}</td>
-    <td>{{ card.batch_name }}</td>
+<tr id="card-{{ card.card_number }}">  
+    <td>
+        {% if card.card_number and card.card_number | length >= 10 %}
+            {{ card.card_number[:6] }}******{{ card.card_number[-4:] }}        
+        {% endif %}
+    </td>
+
+    <td>{{ card.card_type or 'N/A' }}</td>
+    <td>{{ card.card_holder_name or 'N/A' }}</td>
+    <td>{{ card.card_status or 'N/A' }}</td>
+    <td>
+        {% if card.expiry_date %}
+            ****
+        {% endif %}
+    </td>
+
+    <td>{{ card.balance or 'N/A' }}</td>
+    <td>{{ card.received_at or 'N/A' }}</td>
+    <td>{{ card.batch_name or 'N/A' }}</td>
 </tr>

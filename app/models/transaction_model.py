@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime, timezone
-
 
 class Transaction(BaseModel):
     message_type_indicator: str

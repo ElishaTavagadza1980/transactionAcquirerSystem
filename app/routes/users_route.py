@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Form, Depends, Request, Response, HTTPException
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi import APIRouter, Form, Depends, Request, HTTPException
+from fastapi.responses import HTMLResponse
 from app.services.users_service import UserService
-from uuid import uuid4, UUID
-import time
-from app.config import session_store, SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS
-from app.models.users_model import UserCreate, UserUpdate
+from uuid import UUID
+from app.models.users_model import UserUpdate
 from fastapi.templating import Jinja2Templates
 import logging
 from app.models.users_model import ToggleActiveRequest

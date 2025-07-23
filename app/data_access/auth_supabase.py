@@ -1,14 +1,9 @@
 from supabase import create_client, Client
-from app.models.users_model import UserCreate, UserInDB, UserUpdate
 from starlette.config import Config
-from typing import List, Optional
-from fastapi import HTTPException
 import logging
-import json
 import pyotp
 import hashlib
-from uuid import UUID, uuid4
-from datetime import datetime
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

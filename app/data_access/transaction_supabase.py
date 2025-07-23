@@ -1,10 +1,9 @@
 from supabase import create_client, Client
 from app.models.transaction_model import Transaction
-from app.models.merchant_model import Merchant
 from starlette.config import Config
 from typing import List, Optional
 from fastapi import HTTPException
-from datetime import datetime, timezone
+from datetime import datetime
 import logging
 from collections import defaultdict
 

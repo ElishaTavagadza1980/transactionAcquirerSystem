@@ -8,9 +8,7 @@ from app.models.card_model import Card
 import csv
 import logging
 from datetime import datetime, timezone
-from typing import List
 
-# Configure logging to file with timestamp
 log_file = f'card_batch_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
 logging.basicConfig(level=logging.DEBUG, filename=log_file, filemode='w',
                     format='%(asctime)s - %(levelname)s - %(message)s')

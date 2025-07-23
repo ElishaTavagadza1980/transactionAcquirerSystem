@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, HTTPException, Depends
+from fastapi import FastAPI, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -7,8 +7,7 @@ from contextlib import asynccontextmanager
 import httpx
 import time
 import logging 
-from starlette.middleware.base import BaseHTTPMiddleware
-from app.config import session_store, SESSION_COOKIE_NAME, SESSION_EXPIRATION_SECONDS
+from app.config import session_store, SESSION_COOKIE_NAME
 from app.routes.auth_route import router as auth_router
 from app.routes.users_route import router as users_router
 from app.routes.transaction_route import router as transaction_router

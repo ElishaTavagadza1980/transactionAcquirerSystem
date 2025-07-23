@@ -6,7 +6,6 @@ from app.models.card_model import Card
 import logging
 import csv
 from io import StringIO
-from typing import List
 from datetime import datetime
 from app.utils import get_current_user
 

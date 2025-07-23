@@ -1,11 +1,9 @@
 from fastapi import APIRouter, Request, HTTPException, Depends
 from fastapi.responses import HTMLResponse, Response
 from fastapi.templating import Jinja2Templates
-from app.data_access.transaction_supabase import dataGetacquiredtransactions
-from app.data_access.merchant_supabase import MerchantSupabase
 from app.services.settlement_service import SettlementService
 import logging
-from datetime import datetime, date
+from datetime import date
 from typing import Optional
 import os
 from app.utils import get_current_user

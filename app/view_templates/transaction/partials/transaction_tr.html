@@ -8,14 +8,22 @@
             {{ transaction.de_37_retrieval_reference_number or 'N/A' }}
         </a>
     </td>
-    <td>{{ transaction.de_2_pan or 'N/A' }}</td>
+     <td>
+        {% if transaction.de_2_pan and transaction.de_2_pan|length >= 10 %}
+            {{ transaction.de_2_pan[:6] }}******{{ transaction.de_2_pan[-4:] }}       
+        {% endif %}
+    </td>
     <td>{{ transaction.de_3_processing_code or 'N/A' }}</td>
     <td>{{ transaction.de_4_amount_transaction or 'N/A' }}</td>
     <td>{{ transaction.de_7_transmission_date_time or 'N/A' }}</td>
     <td>{{ transaction.de_11_system_trace_audit_number or 'N/A' }}</td>
     <td>{{ transaction.de_12_local_transaction_time or 'N/A' }}</td>
     <td>{{ transaction.de_13_local_transaction_date or 'N/A' }}</td>
-    <td>{{ transaction.de_14_expiration_date or 'N/A' }}</td>
+    <td>
+        {% if transaction.de_14_expiration_date %}
+            ****        
+        {% endif %}
+    </td>
     <td>{{ transaction.de_18_merchant_type or 'N/A' }}</td>
     <td>{{ transaction.de_19_acquiring_institution_country_code or 'N/A' }}</td>
     <td>{{ transaction.de_22_pos_entry_mode or 'N/A' }}</td>

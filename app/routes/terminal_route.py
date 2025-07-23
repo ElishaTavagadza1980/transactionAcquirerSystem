@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, HTTPException, Form, Query, Depends
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from app.services.terminal_service import TerminalService
 from app.models.terminal_model import Terminal

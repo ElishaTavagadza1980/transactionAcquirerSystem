@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, HTTPException, Form, Query, Depends
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from app.services.merchant_service import MerchantService
-from app.models.merchant_model import Merchant, MerchantSettings
+from app.models.merchant_model import Merchant
 import logging
 from typing import Optional
 from datetime import datetime

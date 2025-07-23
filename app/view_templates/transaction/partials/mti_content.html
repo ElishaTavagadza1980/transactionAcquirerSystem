@@ -1,30 +1,91 @@
 <div class="mti-content">
     {% if transaction %}
-        <div class="label">MessageType:</div><div class="value">{{ transaction.message_type_indicator or 'N/A' }}</div>
-        <div class="label">DE002_PrimaryAccountNumber:</div><div class="value">{{ transaction.de_2_pan or 'N/A' }}</div>
-        <div class="label">DE003_ProcessingCode:</div><div class="value">{{ transaction.de_3_processing_code or 'N/A' }}</div>
-        <div class="label">DE004_AmountTransaction:</div><div class="value">{{ transaction.de_4_amount_transaction or 'N/A' }}</div>
-        <div class="label">DE007_TransmissionDateTime:</div><div class="value">{{ transaction.de_7_transmission_date_time or 'N/A' }}</div>
-        <div class="label">DE011_SystemTraceAuditNumber:</div><div class="value">{{ transaction.de_11_system_trace_audit_number or 'N/A' }}</div>
-        <div class="label">DE012_LocalTime:</div><div class="value">{{ transaction.de_12_local_transaction_time or 'N/A' }}</div>
-        <div class="label">DE013_LocalDate:</div><div class="value">{{ transaction.de_13_local_transaction_date or 'N/A' }}</div>
-        <div class="label">DE014_ExpirationDate:</div><div class="value">{{ transaction.de_14_expiration_date or 'N/A' }}</div>
-        <div class="label">DE018_MerchantType:</div><div class="value">{{ transaction.de_18_merchant_type or 'N/A' }}</div>
-        <div class="label">DE019_CountryCode:</div><div class="value">{{ transaction.de_19_acquiring_institution_country_code or 'N/A' }}</div>
-        <div class="label">DE022_POSEntryMode:</div><div class="value">{{ transaction.de_22_pos_entry_mode or 'N/A' }}</div>
-        <div class="label">DE023_PANSequenceNumber:</div><div class="value">{{ transaction.de_23_card_sequence_number or 'N/A' }}</div>
-        <div class="label">DE032_AcquirerInstitutionID:</div><div class="value">{{ transaction.de_32_acquiring_institution_id or 'N/A' }}</div>
-        <div class="label">DE033_ForwardingInstitutionID:</div><div class="value">{{ transaction.de_33_forwarding_institution_id or 'N/A' }}</div>
-        <div class="label">DE035_Track2Data:</div><div class="value">{{ transaction.de_35_track2_data or 'N/A' }}</div>
-        <div class="label">DE037_RetrievalReferenceNumber:</div><div class="value">{{ transaction.de_37_retrieval_reference_number or 'N/A' }}</div>
-        <div class="label">DE038_AuthIDResponse:</div><div class="value">{{ transaction.de_38_authorization_id_response or 'N/A' }}</div>
-        <div class="label">DE039_ResponseCode:</div><div class="value">{{ transaction.de_39_response_code or 'N/A' }}</div>
-        <div class="label">DE041_CardAcceptorTerminalID:</div><div class="value">{{ transaction.de_41_card_acceptor_terminal_id or 'N/A' }}</div>
-        <div class="label">DE042_CardAcceptorID:</div><div class="value">{{ transaction.de_42_card_acceptor_id or 'N/A' }}</div>
-        <div class="label">DE043_CardAcceptorName:</div><div class="value">{{ transaction.de_43_card_acceptor_name_location or 'N/A' }}</div>
-        <div class="label">DE049_Currency Code:</div><div class="value">{{ transaction.de_49_currency_code_transaction or 'N/A' }}</div>
-        <div class="label">Status:</div><div class="value">{{ transaction.status or 'N/A' }}</div>
-        <div class="label">Status Reason:</div><div class="value">{{ transaction.status_reason or 'N/A' }}</div>
+        <div class="label">MessageType:</div>
+        <div class="value">{{ transaction.message_type_indicator or 'N/A' }}</div>
+
+        <div class="label">DE002_PrimaryAccountNumber:</div>
+        <div class="value">
+            {% if transaction.de_2_pan and transaction.de_2_pan|length >= 10 %}
+                {{ transaction.de_2_pan[:6] }}{{ '*' * (transaction.de_2_pan|length - 10) }}{{ transaction.de_2_pan[-4:] }}
+            {% endif %}
+        </div>
+
+        <div class="label">DE003_ProcessingCode:</div>
+        <div class="value">{{ transaction.de_3_processing_code or 'N/A' }}</div>
+
+        <div class="label">DE004_AmountTransaction:</div>
+        <div class="value">{{ transaction.de_4_amount_transaction or 'N/A' }}</div>
+
+        <div class="label">DE007_TransmissionDateTime:</div>
+        <div class="value">{{ transaction.de_7_transmission_date_time or 'N/A' }}</div>
+
+        <div class="label">DE011_SystemTraceAuditNumber:</div>
+        <div class="value">{{ transaction.de_11_system_trace_audit_number or 'N/A' }}</div>
+
+        <div class="label">DE012_LocalTime:</div>
+        <div class="value">{{ transaction.de_12_local_transaction_time or 'N/A' }}</div>
+
+        <div class="label">DE013_LocalDate:</div>
+        <div class="value">{{ transaction.de_13_local_transaction_date or 'N/A' }}</div>
+
+        <div class="label">DE014_ExpirationDate:</div>
+        <div class="value">
+            {% if transaction.de_14_expiration_date %}
+                ****
+            {% endif %}
+        </div>
+
+        <div class="label">DE018_MerchantType:</div>
+        <div class="value">{{ transaction.de_18_merchant_type or 'N/A' }}</div>
+
+        <div class="label">DE019_CountryCode:</div>
+        <div class="value">{{ transaction.de_19_acquiring_institution_country_code or 'N/A' }}</div>
+
+        <div class="label">DE022_POSEntryMode:</div>
+        <div class="value">{{ transaction.de_22_pos_entry_mode or 'N/A' }}</div>
+
+        <div class="label">DE023_PANSequenceNumber:</div>
+        <div class="value">{{ transaction.de_23_card_sequence_number or 'N/A' }}</div>
+
+        <div class="label">DE032_AcquirerInstitutionID:</div>
+        <div class="value">{{ transaction.de_32_acquiring_institution_id or 'N/A' }}</div>
+
+        <div class="label">DE033_ForwardingInstitutionID:</div>
+        <div class="value">{{ transaction.de_33_forwarding_institution_id or 'N/A' }}</div>
+
+        <div class="label">DE035_Track2Data:</div>
+        <div class="value">
+            {% if transaction.de_35_track2_data %}
+                ***************
+            {% endif %}
+        </div>
+
+        <div class="label">DE037_RetrievalReferenceNumber:</div>
+        <div class="value">{{ transaction.de_37_retrieval_reference_number or 'N/A' }}</div>
+
+        <div class="label">DE038_AuthIDResponse:</div>
+        <div class="value">{{ transaction.de_38_authorization_id_response or 'N/A' }}</div>
+
+        <div class="label">DE039_ResponseCode:</div>
+        <div class="value">{{ transaction.de_39_response_code or 'N/A' }}</div>
+
+        <div class="label">DE041_CardAcceptorTerminalID:</div>
+        <div class="value">{{ transaction.de_41_card_acceptor_terminal_id or 'N/A' }}</div>
+
+        <div class="label">DE042_CardAcceptorID:</div>
+        <div class="value">{{ transaction.de_42_card_acceptor_id or 'N/A' }}</div>
+
+        <div class="label">DE043_CardAcceptorName:</div>
+        <div class="value">{{ transaction.de_43_card_acceptor_name_location or 'N/A' }}</div>
+
+        <div class="label">DE049_Currency Code:</div>
+        <div class="value">{{ transaction.de_49_currency_code_transaction or 'N/A' }}</div>
+
+        <div class="label">Status:</div>
+        <div class="value">{{ transaction.status or 'N/A' }}</div>
+
+        <div class="label">Status Reason:</div>
+        <div class="value">{{ transaction.status_reason or 'N/A' }}</div>
     {% else %}
         <p>No transaction found for this MTI.</p>
     {% endif %}

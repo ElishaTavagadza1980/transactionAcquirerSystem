@@ -1,9 +1,9 @@
 import csv
 import os
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from ftplib import FTP_TLS
 import logging
-from typing import Optional, Dict, List
+from typing import Optional, Dict
 from fastapi import Depends
 from app.data_access.transaction_supabase import dataGetacquiredtransactions
 from app.data_access.merchant_supabase import MerchantSupabase

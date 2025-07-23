@@ -1,8 +1,6 @@
-from fastapi import HTTPException
 from uuid import UUID
 from app.data_access.users_supabase import AuthSupabase
-from app.models.users_model import UserCreate, UserUpdate
-import logging
+from app.models.users_model import UserUpdate
 
 class AuthService:
     def __init__(self):
