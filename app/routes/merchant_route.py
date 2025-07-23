@@ -389,18 +389,14 @@ async def config_page(request: Request, user=Depends(get_current_user), merchant
 
 @router.post("/save-settings")
 async def save_merchant_settings(request: Request):
-    try:
-        raw_body = await request.body()
-        print("Raw body:", raw_body.decode())  # Log what's being received
+    data = await request.json()
+    merchant_id = data.get("merchant_id")
+    if not merchant_id:
+        return JSONResponse(content={"error": "Merchant ID required"}, status_code=400)
 
-        data = await request.json()
-        print("Parsed data:", data)
-    except Exception as e:
-        print("Error parsing JSON:", e)
-        return HTMLResponse(content=f"<div class='alert alert-danger'>Invalid JSON payload: {e}</div>", status_code=400)
+    settings = merchant_service.save_settings(merchant_id, data)
+    return JSONResponse(content={"status": "Saved", "settings": settings.__dict__})
 
-    # Process as before
-    return HTMLResponse(content="<div class='alert alert-success'>Settings saved!</div>")
 
 @router.get("/get-settings/{merchant_id}")
 def get_settings(merchant_id: str):

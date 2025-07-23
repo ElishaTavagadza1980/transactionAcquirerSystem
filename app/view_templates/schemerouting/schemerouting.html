@@ -25,38 +25,8 @@
 <body>
     {% include 'common/nav.html' %}
     <div class="container">
-        <h1 class="mt-4 mb-4">Scheme Routing Management</h1>
-
-        <!-- Create New Routing Form -->
-        <div class="form-container">
-            <h3>Create New Routing</h3>
-            <form action="/schemerouting/create" method="POST">
-                <label for="scheme">Card Scheme</label>
-                <select id="scheme" name="scheme" required>
-                    <option value="" disabled selected>Select a scheme</option>
-                    <option value="Visa">Visa</option>
-                    <option value="MasterCard">MasterCard</option>
-                    <option value="Amex">Amex</option>
-                    <option value="Diners">Diners</option>
-                    <option value="UnionPay">UnionPay</option>
-                    <option value="JCB">JCB</option>
-                </select>
-
-                <label for="routing">Routing</label>
-                <select id="routing" name="routing" required>
-                    <option value="external" selected>External</option>
-                    <option value="internal">Internal</option>
-                </select>
-
-                <button type="submit">Create</button>
-            </form>
-            {% if error %}
-            <p class="error">{{ error }}</p>
-            {% endif %}
-        </div>
-
+        <h1 class="mt-4 mb-4">Scheme Routing Management</h1>        
         <!-- Routing Table -->
-        <h3>Existing Routings</h3>
         <table>
             <thead>
                 <tr>
