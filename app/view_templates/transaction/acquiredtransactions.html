@@ -191,17 +191,17 @@
     <!-- JavaScript for Modal Trigger -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Handle row click to open modal
+        
         document.addEventListener('click', function (event) {
             const row = event.target.closest('tr[data-retrieval-ref]');
             if (row) {
                 const retrievalRef = row.getAttribute('data-retrieval-ref');
-                // Set the retrieval ref on the modal and update title
+               
                 const modalElement = document.getElementById('transactionModal');
                 modalElement.setAttribute('data-current-retrieval-ref', retrievalRef);
                 document.getElementById('transactionModalLabel').textContent =
                     `Transaction Details - Retrieval Ref: ${retrievalRef}`;
-                // Trigger HTMX requests for MTI 0100 and 0110
+                
                 htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0100`, {
                     target: '#mti0100Content'
                 });
@@ -209,21 +209,17 @@
                     target: '#mti0110Content'
                 });
 
-                // Show modal
+                
                 const modal = new bootstrap.Modal(modalElement);
                 modal.show();
             }
         });
-
-        // Cleanup backdrop on modal hidden
         const modalElement = document.getElementById('transactionModal');
         modalElement.addEventListener('hidden.bs.modal', function () {
             document.body.classList.remove('modal-open');
             const backdrops = document.querySelectorAll('.modal-backdrop');
             backdrops.forEach(backdrop => backdrop.remove());
         });
-
-        // Bind MTI link clicks (if present at load time)
         document.querySelectorAll('.mti-link').forEach(link => {
             link.addEventListener('click', function (event) {
                 event.preventDefault();
