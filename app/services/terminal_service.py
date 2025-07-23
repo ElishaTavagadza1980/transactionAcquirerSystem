@@ -43,7 +43,7 @@ class TerminalService:
                 else:
                     filtered_terminals = []
 
-            # Validate using Pydantic
+            
             valid_terminals = []
             for terminal in filtered_terminals:
                 try:

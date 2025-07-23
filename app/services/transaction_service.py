@@ -238,7 +238,7 @@ class TransactionService:
             transaction.de_38_authorization_id_response = scheme_response.get("authorization_id", str(random.randint(100000, 999999)))
             transaction.message_type_indicator = "0110"
             
-            # Log and store the response transaction
+            # store the response transaction
             response_transaction = transaction.dict(exclude_unset=True)
             response_transaction['created_date'] = response_transaction.get('created_date', datetime.now(timezone.utc).isoformat() + 'Z')
             response_transaction['de_11_system_trace_audit_number'] = response_transaction.get('de_11_system_trace_audit_number', None)
@@ -258,7 +258,7 @@ class TransactionService:
         if transaction.message_type_indicator == "0100":
             transaction.message_type_indicator = "0110"
 
-        # Sanitize card number
+        # card number
         card_number = transaction.de_2_pan.strip()
         logger.debug(f"Input PAN for card lookup: '{card_number}'")
         card_response = self.card_supabase.get_card_by_number(card_number)
@@ -376,7 +376,7 @@ class TransactionService:
         total_amount = 0.0
         active_count = 0
         blocked_count = 0
-        currency = "USD"  # or infer from transactions if needed
+        currency = "USD"  
 
         for txn in transactions:
             if txn.status == "APPROVED":

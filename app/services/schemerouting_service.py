@@ -6,7 +6,7 @@ from app.data_access.schemerouting_supabase import (
     dataUpdateSchemeRouting,
 )
 from app.models.schemerouting_model import SchemeRouting
-from datetime import datetime, timezone
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)

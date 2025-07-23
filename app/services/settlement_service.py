@@ -7,7 +7,6 @@ from typing import Optional, Dict
 from fastapi import Depends
 from app.data_access.transaction_supabase import dataGetacquiredtransactions
 from app.data_access.merchant_supabase import MerchantSupabase
-from app.models.transaction_model import Transaction
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
