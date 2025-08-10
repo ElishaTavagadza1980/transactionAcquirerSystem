@@ -191,49 +191,52 @@
     <!-- JavaScript for Modal Trigger -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        
-        document.addEventListener('click', function (event) {
-            const row = event.target.closest('tr[data-retrieval-ref]');
-            if (row) {
-                const retrievalRef = row.getAttribute('data-retrieval-ref');
-               
-                const modalElement = document.getElementById('transactionModal');
-                modalElement.setAttribute('data-current-retrieval-ref', retrievalRef);
-                document.getElementById('transactionModalLabel').textContent =
-                    `Transaction Details - Retrieval Ref: ${retrievalRef}`;
-                
-                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0100`, {
-                    target: '#mti0100Content'
-                });
-                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0110`, {
-                    target: '#mti0110Content'
-                });
+    document.addEventListener('click', function (event) {
+        const link = event.target.closest('.open-transaction-modal');
+        if (link) {
+            event.preventDefault();
+            const retrievalRef = link.dataset.retrieval;
 
-                
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-            }
-        });
-        const modalElement = document.getElementById('transactionModal');
-        modalElement.addEventListener('hidden.bs.modal', function () {
-            document.body.classList.remove('modal-open');
-            const backdrops = document.querySelectorAll('.modal-backdrop');
-            backdrops.forEach(backdrop => backdrop.remove());
-        });
-        document.querySelectorAll('.mti-link').forEach(link => {
-            link.addEventListener('click', function (event) {
-                event.preventDefault();
-                const mti = this.getAttribute('data-mti');
-                const target = this.getAttribute('data-hx-target');
-                const retrievalRef = modalElement.getAttribute('data-current-retrieval-ref') || '';
-                if (retrievalRef && target) {
-                    htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=${mti}`, {
-                        target
-                    });
-                }
+            const modalElement = document.getElementById('transactionModal');
+            modalElement.setAttribute('data-current-retrieval-ref', retrievalRef);
+            document.getElementById('transactionModalLabel').textContent =
+                `Transaction Details - Retrieval Ref: ${retrievalRef}`;
+
+            // Load Message Type Indicator(MTI) content
+            htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0100`, {
+                target: '#mti0100Content'
             });
-        });
+            htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=0110`, {
+                target: '#mti0110Content'
+            });
+
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
     });
+
+    const modalElement = document.getElementById('transactionModal');
+    modalElement.addEventListener('hidden.bs.modal', function () {
+        document.body.classList.remove('modal-open');
+        document.querySelectorAll('.modal-backdrop').forEach(b => b.remove());
+    });
+
+    document.addEventListener('click', function (event) {
+        const link = event.target.closest('.mti-link');
+        if (link) {
+            event.preventDefault();
+            const mti = link.dataset.mti;
+            const target = link.dataset.hxTarget;
+            const retrievalRef = modalElement.getAttribute('data-current-retrieval-ref') || '';
+            if (retrievalRef && target) {
+                htmx.ajax('GET', `/transaction/by-retrieval/${retrievalRef}?mti=${mti}`, {
+                    target
+                });
+            }
+        }
+    });
+});
+
 </script>
 </body>
 </html>
