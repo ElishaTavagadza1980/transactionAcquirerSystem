@@ -176,7 +176,6 @@ def create_merchant(
         logger.error(f"Error creating merchant: {str(e)}")
         return HTMLResponse(
             content=f"<div class='alert alert-danger'>Failed to create merchant: {str(e)}</div>",
-            status_code=500
         )
 
 
